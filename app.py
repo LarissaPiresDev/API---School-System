@@ -37,6 +37,22 @@ def get_turmas():
     return jsonify(turmas)
 
 
+@app.route('/turmas/<id>', methods=['GET'])
+def turmaPorId(id):
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID inserido para turma precisa ser um numero inteiro'}), 400
+    if id <=0:
+        return jsonify({'mensagem': 'ID de turma nao pode ser menor ou igual a que zero'}), 400
+    turmas = dados['Turmas']
+    for turma in turmas:
+        if turma['id'] == id:
+            return jsonify(turma)
+            
+    return jsonify({'mensagem': 'Turma nao encontrada/inexistente'}), 404
+
+
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 @app.route('/alunos/', methods=['GET'])
