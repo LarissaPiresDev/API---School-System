@@ -90,4 +90,23 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(type(obj_retornado),type([]))
 
+    def test_002_id_de_aluno_não_int(self):
+        resposta = requests.get('http://localhost:5002/alunos/1.5')
+        if resposta.status_code == 400:
+            resp_retornada = resposta.json()
+            assert {'mensagem': 'ID inserido para aluno tem que ser um numero inteiro'} == resp_retornada
+
+    def test_003_id_de_aluno_menor_igual_que_zero(self):
+        resposta = requests.get('http://localhost:5002/alunos/-1')
+        if resposta.status_code == 400:
+            resp_retornada = resposta.json()  
+            assert {'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'} == resp_retornada
+
+
+    def test_004_id_de_aluno_inexistente(self):
+        resposta = requests.get('http://localhost:5002/alunos/500')
+        if resposta.status_code == 404:
+            resp_retornada = resposta.json()
+            assert {'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'} == resp_retornada
+
 
