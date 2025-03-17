@@ -19,6 +19,13 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(type(obj_retornado),type([]))
 
+    def test_002_id_de_professor_não_int(self):
+        resposta = requests.get('http://localhost:5002/professores/1.5')
+        
+        if resposta.status_code == 400:
+            resp_retornada = resposta.json()
+            assert {'mensagem': 'ID inserido para professor precisa ser um numero inteiro'} == resp_retornada
+
 # ---------------------------------------------TURMAS------------------------------------------------ #
 
     def test_001_turmas_retorna_lista(self):
