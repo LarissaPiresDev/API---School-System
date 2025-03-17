@@ -12,6 +12,7 @@ def get_professores():
     professores = dados['Professores']
     return jsonify(professores)
 
+@app.route('/professores/<id>', methods=['GET'])
 def profPorId(id):
     try:
         id = int(id)
