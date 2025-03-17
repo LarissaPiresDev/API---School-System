@@ -32,6 +32,12 @@ class TestStringMethods(unittest.TestCase):
             resp_retornada = resposta.json()                
             assert {'mensagem': 'ID do professor nao pode ser menor ou igual a que zero'} == resp_retornada
 
+    def test_004_id_de_professor_inexistente(self):
+        resposta = requests.get('http://localhost:5002/professores/500')
+        if resposta.status_code == 404:
+            resp_retornada = resposta.json()                
+            assert {'mensagem': 'Professor(a) nao encontrado(a)/inexistente'} == resp_retornada
+
 # ---------------------------------------------TURMAS------------------------------------------------ #
 
     def test_001_turmas_retorna_lista(self):
