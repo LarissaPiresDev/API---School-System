@@ -20,5 +20,18 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(type(obj_retornado),type([]))
 
 
+    def test_001_alunos_retorna_lista(self):
+        resposta = requests.get('http://localhost:5002/alunos')
+
+        if resposta.status_code == 404:
+            self.fail("voce nao definiu a pagina /alunos no seu server")
+        
+        try:
+            obj_retornado = resposta.json()
+       
+        except:
+            self.fail("queria um json mas voce retornou outra coisa")
+
+        self.assertEqual(type(obj_retornado),type([]))
 
 
