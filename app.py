@@ -103,7 +103,25 @@ def turmaPorId(id):
     return jsonify({'mensagem': 'Turma nao encontrada/inexistente'}), 404
 
 
+@app.route('/turmas', methods=['POST'])
+def criar_turma():
+    dict = request.json
 
+    if 'professor_id' not in dict or 'descricao' not in dict:
+        return jsonify({'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}), 400
+    
+
+
+
+    
+    if 'ativo' not in dict:
+        dict['ativo'] = False
+
+    id_novo = max([turma['id'] for turma in users['Turmas']]) + 1
+    dict['id'] = id_novo
+    users['Turmas'].append(dict)
+
+    return jsonify(dict), 201 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 @app.route('/alunos/', methods=['GET'])
 @app.route('/alunos', methods=['GET'])
