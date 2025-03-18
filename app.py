@@ -55,7 +55,10 @@ def criar_professor():
         return jsonify({'mensagem': 'Esse professor não tem condiçoes de dar aula, idade muito alta'}), 400
 
     if dict['idade'] < 0:
-        return jsonify({'mensagem': 'Idade não pode ser negativa!!'}), 400   
+        return jsonify({'mensagem': 'Idade não pode ser negativa!!'}), 400
+
+    if dict['salario'] < 1400.00:
+        return jsonify({'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'}), 400   
 
 
     id_novo = max([professor['id'] for professor in users['Professores']]) + 1
