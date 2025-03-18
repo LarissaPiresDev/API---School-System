@@ -116,7 +116,8 @@ def criar_turma():
     if not isinstance(dict['professor_id'], int):
         return jsonify({'mensagem': 'a chave professor_id precisa ser um número INTEIRO'}), 400
     
-
+    if 'ativo' in dict and not isinstance(dict['ativo'], bool):
+        return jsonify({'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'}), 400   
     
 
     
