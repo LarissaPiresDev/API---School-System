@@ -110,9 +110,16 @@ def criar_turma():
     if 'professor_id' not in dict or 'descricao' not in dict:
         return jsonify({'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}), 400
     
+    if not isinstance(dict['descricao'], str) or not dict['descricao'].strip():
+        return jsonify({'mensagem': 'decricao precisa ser uma STRING e/ou não pode estar vazia'}), 400
+    
+    if not isinstance(dict['professor_id'], int):
+        return jsonify({'mensagem': 'a chave professor_id precisa ser um número INTEIRO'}), 400
+    
 
+    
 
-
+    
     
     if 'ativo' not in dict:
         dict['ativo'] = False
