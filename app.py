@@ -1,15 +1,15 @@
-from flask import Flask, jsonify
-import users
+from flask import Flask, jsonify, request
+from users import users
 
 app = Flask(__name__)
-dados = users.users
+
 
 #--------------------------------------------PROFESSORES------------------------------------------- #
 
 @app.route('/professores/', methods=['GET'])
 @app.route('/professores', methods=['GET'])
 def get_professores():
-    professores = dados['Professores']
+    professores = users['Professores']
     return jsonify(professores)
 
 @app.route('/professores/<id>', methods=['GET'])
@@ -22,19 +22,37 @@ def profPorId(id):
     if id <= 0:
         return jsonify({'mensagem': 'ID do professor nao pode ser menor ou igual a que zero'}), 400
     
-    professores = dados['Professores']
+    professores = users['Professores']
     for professor in professores:
         if professor['id'] == id:
             return jsonify(professor)
             
     return jsonify({'mensagem': 'Professor(a) nao encontrado(a)/inexistente'}), 404
 
+@app.route('/professores', methods=['POST'])
+def criar_professor():
+    dict = request.json
+
+    if not dict.get('nome') or not dict.get('materia'):
+        return jsonify({'mensagem': 'Para criar um novo professor preciso que voce me passe os parâmetros nome e materia'}), 400
+    
+    if 'idade' not in dict:
+        return jsonify({'mensagem': 'Idade e obrigatoria, por favor insira-a'}), 400
+
+    id_novo = max([professor['id'] for professor in users['Professores']]) + 1
+    dict['id'] = id_novo
+    users['Professores'].append(dict)
+
+    return jsonify(users['Professores']), 201 
+    
+
+
 # ---------------------------------------------TURMAS------------------------------------------------ #
 
 @app.route('/turmas/', methods=['GET'])
 @app.route('/turmas', methods=['GET'])
 def get_turmas():
-    turmas = dados['Turmas']
+    turmas = users['Turmas']
     return jsonify(turmas)
 
 
@@ -46,7 +64,7 @@ def turmaPorId(id):
         return jsonify({'mensagem': 'ID inserido para turma precisa ser um numero inteiro'}), 400
     if id <=0:
         return jsonify({'mensagem': 'ID de turma nao pode ser menor ou igual a que zero'}), 400
-    turmas = dados['Turmas']
+    turmas = users['Turmas']
     for turma in turmas:
         if turma['id'] == id:
             return jsonify(turma)
@@ -59,7 +77,7 @@ def turmaPorId(id):
 @app.route('/alunos/', methods=['GET'])
 @app.route('/alunos', methods=['GET'])
 def get_alunos():
-    alunos = dados['Alunos']
+    alunos = users['Alunos']
     return jsonify(alunos)
 
 @app.route('/alunos/<id>', methods=['GET'])
@@ -72,7 +90,7 @@ def alunoPorId(id):
     if id <=0:
         return jsonify({'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'}), 400
     
-    alunos = dados['Alunos']
+    alunos = users['Alunos']
     for aluno in alunos:
         if aluno['id'] == id:
             return jsonify(aluno)
@@ -82,4 +100,4 @@ def alunoPorId(id):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port = 5002,debug=True)
+    app.run(host='localhost', port = 5003,debug=True)
