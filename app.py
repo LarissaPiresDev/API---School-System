@@ -38,6 +38,15 @@ def criar_professor():
     
     if 'idade' not in dict:
         return jsonify({'mensagem': 'Idade e obrigatoria, por favor insira-a'}), 400
+    
+    if not isinstance(dict['nome'], str) or not isinstance(dict['materia'], str):
+        return jsonify({'mensagem': 'Os parametros nome e/ou materia precisam ser do tipo STRING'}), 400
+    
+    if not isinstance(dict['idade'], int):
+        return jsonify({'mensagem': 'Idade precisa ser um número INTEIRO'}), 400
+    
+    if not isinstance(dict['salario'], (int, float)):
+        return jsonify({'mensagem':'O parametro de salário precisa ser um número do tipo float ou int'}), 400
 
     id_novo = max([professor['id'] for professor in users['Professores']]) + 1
     dict['id'] = id_novo
