@@ -198,7 +198,7 @@ class TestStringMethods(unittest.TestCase):
             resp_retornada = resposta.json()
             assert {'mensagem': 'Turma nao encontrada/inexistente'} == resp_retornada
     
-    def test_005_se_professor_id_nao_for_informado(self):
+    def test_005_se_em_turma_a_chave_professor_id_nao_for_informado(self):
         nova_turma = {
             "descricao": "7 ano D",
             "ativo": True
@@ -207,8 +207,19 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
         resp_retornada = resposta.json()
         assert {'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}
-        
-        
+    
+    def test_006_se_a_chave_descricao_nao_for_inserida_ou_esta_vazia(self):
+        nova_turma = {
+            "descricao": "  ",
+            "ativo": True,
+            "professor_id": 4
+        }
+
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'decricao precisa ser uma STRING e/ou não pode estar vazia'} == resp_retornada
+    
+    
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 
