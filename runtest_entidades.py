@@ -196,8 +196,19 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.get('http://localhost:5003/turmas/500')
         if resposta.status_code == 404:
             resp_retornada = resposta.json()
-            assert {'mensagem': 'Turma nao encontrada/inexistente'} == resp_retornada  
+            assert {'mensagem': 'Turma nao encontrada/inexistente'} == resp_retornada
+    
+    def test_005_se_professor_id_nao_for_informado(self):
+        nova_turma = {
+            "descricao": "7 ano D",
+            "ativo": True
+        }
 
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}
+        
+        
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 
