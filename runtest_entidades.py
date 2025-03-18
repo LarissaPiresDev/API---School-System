@@ -136,10 +136,19 @@ class TestStringMethods(unittest.TestCase):
         if novo_professor['idade'] < 0:
             resp_retornada = resposta.json()
             assert {'mensagem': 'Idade não pode ser negativa!!'} == resp_retornada
-        
 
+    def test_013_se_salario_for_negativo_ou_menor_que_1400(self):
+        novo_professor = {
+            "nome": "Simas",
+            "idade": 18,
+            "materia": "Fisica",
+            "salario": -180.90
+        }
 
-    
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if novo_professor['salario'] <= 1400.00:
+            resp_retornada = resposta.json()
+            assert {'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'} == resp_retornada
 # ---------------------------------------------TURMAS------------------------------------------------ #
 
     def test_001_turmas_retorna_lista(self):
