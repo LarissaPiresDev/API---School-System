@@ -157,13 +157,12 @@ class TestStringMethods(unittest.TestCase):
             "materia": "Fisica",
             "endereco": "Rua dos Fisicos e Quimicos 1895",
             "telefone": "4002-8922"
-        } 
+        }
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if resposta.status_code == 500:
-            resp_retornada = resposta.json()
-            assert 'chaves_invalidas' in resp_retornada
-            assert set(resp_retornada['chaves_invalidas']) == {'endereco', 'telefone'}
-# ---------------------------------------------TURMAS------------------------------------------------ #
+        resp_retornada = resposta.json()
+        assert 'chaves_invalidas' in resp_retornada
+        assert set(resp_retornada['chaves_invalidas']) == {'endereco', 'telefone'}
+        # ---------------------------------------------TURMAS------------------------------------------------ #
 
     def test_001_turmas_retorna_lista(self):
         resposta = requests.get('http://localhost:5003/turmas')
