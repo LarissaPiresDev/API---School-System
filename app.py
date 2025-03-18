@@ -117,7 +117,21 @@ def criar_turma():
         return jsonify({'mensagem': 'a chave professor_id precisa ser um número INTEIRO'}), 400
     
     if 'ativo' in dict and not isinstance(dict['ativo'], bool):
-        return jsonify({'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'}), 400   
+        return jsonify({'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'}), 400
+    
+
+    prof_existe = False
+    for professor in users['Professores']:
+        if professor['id'] == dict['professor_id']:
+            prof_existe = True
+            break
+    if not prof_existe:
+        return jsonify({'mensagem':'O valor informado na chave professor_id é inexistente, coloque um id existente'}), 400
+    
+    for turma in users['Turmas']:
+        if turma['descricao'].lower() == dict['descricao'].lower():
+            return jsonify({'mensagem': f'A turma com a descricao {turma["descricao"].title()} ja existe'}), 400
+
     
 
     
