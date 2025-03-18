@@ -100,8 +100,46 @@ class TestStringMethods(unittest.TestCase):
         if not isinstance(novo_professor['salario'], (float, int)):
             resp_retornada = resposta.json()
             assert {'mensagem':'O parametro de salário precisa ser um número do tipo float ou int'} == resp_retornada
-    
 
+    def test_010_se_idade_menor_que_18(self):
+        novo_professor = {
+            "nome": "Simas",
+            "idade": 16,
+            "materia": "Fisica",
+            "salario": 1500.00
+        }
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if novo_professor['idade'] >= 0 and novo_professor['idade'] < 18:
+            resp_retornada = resposta.json()
+            assert {'mensagem': 'Um professor precisa ter no minimo 18 anos'} == resp_retornada
+    
+    def test_011_se_idade_for_muito_alta(self):
+        novo_professor = {
+            "nome": "Simas",
+            "idade": 120,
+            "materia": "Fisica",
+            "salario": 1500.00
+        }
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if novo_professor['idade'] > 18 and novo_professor['idade'] >= 120:
+            resp_retornada = resposta.json()
+            assert {'mensagem': 'Esse professor não tem condiçoes de dar aula, idade muito alta'} == resp_retornada
+
+    def test_012_se_idade_e_negativa(self):
+        novo_professor = {
+            "nome": "Simas",
+            "idade": -1,
+            "materia": "Fisica",
+            "salario": -180.90
+        }
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if novo_professor['idade'] < 0:
+            resp_retornada = resposta.json()
+            assert {'mensagem': 'Idade não pode ser negativa!!'} == resp_retornada
+        
+
+
+    
 # ---------------------------------------------TURMAS------------------------------------------------ #
 
     def test_001_turmas_retorna_lista(self):
