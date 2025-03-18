@@ -229,6 +229,15 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         assert {'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'} == resp_retornada
 
+    def test_008_caso_descricao_inserida_em_turma_ja_esteja_em_nosso_banco_de_dados(self):
+        nova_turma = {
+            "descricao": "7 ano A",
+            "ativo": True,
+            "professor_id": 4
+        }
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
+        resp_retornada = resposta.json()
+        assert {'mensagem': f'A turma com a descricao {nova_turma["descricao"].title()} ja existe'} == resp_retornada
     
     
 
