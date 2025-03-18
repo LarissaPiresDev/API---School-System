@@ -62,6 +62,48 @@ class TestStringMethods(unittest.TestCase):
         if 'id' not in novo_professor:
             resp_retornada = resposta.json()
             assert {'mensagem': 'Idade e obrigatoria, por favor insira-a'} == resp_retornada
+    
+    def test_007_se_nome_e_materia_de_professor_nao_forem_strings(self):
+        novo_professor = {
+            "nome": 12345,
+            "idade": 45,
+            "materia": "Fisica",
+            "salario": 1500.00
+        }
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if resposta.status_code == 400:
+            if not isinstance(novo_professor["nome"], str) or not isinstance(novo_professor["materia"], str):
+                resp_retornada = resposta.json()
+                assert {'mensagem': 'Os parametros nome e/ou materia precisam ser do tipo STRING'} == resp_retornada
+    
+    def test_008_se_idade_nao_for_um_numero_inteiro(self):
+        novo_professor = {
+            "nome": "Simas",
+            "idade": 15.0,
+            "materia": "Fisica",
+            "salario": 1500.00
+        }
+
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if resposta.status_code == 400:
+            if not isinstance(novo_professor['idade'], int):
+                resp_retornada = resposta.json()
+                assert {'mensagem': 'Idade precisa ser um número INTEIRO'} == resp_retornada
+
+    def test_009_se_salario_nao_for_float_ou_int(self):
+        novo_professor = {
+            "nome": "Simas",
+            "idade": 18,
+            "materia": "Fisica",
+            "salario": "mil e quinhentos"
+        }
+
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if resposta.status_code == 400:
+            if not isinstance(novo_professor['salario'], (float, int)):
+                resp_retornada = resposta.json()
+                assert {'mensagem':'O parametro de salário precisa ser um número do tipo float ou int'} == resp_retornada
+    
 
 # ---------------------------------------------TURMAS------------------------------------------------ #
 
