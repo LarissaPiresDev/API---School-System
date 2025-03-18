@@ -149,6 +149,20 @@ class TestStringMethods(unittest.TestCase):
         if novo_professor['salario'] <= 1400.00:
             resp_retornada = resposta.json()
             assert {'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'} == resp_retornada
+
+    def test_014_se_tem_chaves_invalidas(self):
+        novo_professor = {
+            "nome": "Simas",
+            "idade": 45,
+            "materia": "Fisica",
+            "endereco": "Rua dos Fisicos e Quimicos 1895",
+            "telefone": "4002-8922"
+        } 
+        resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
+        if resposta.status_code == 500:
+            resp_retornada = resposta.json()
+            assert 'chaves_invalidas' in resp_retornada
+            assert set(resp_retornada['chaves_invalidas']) == {'endereco', 'telefone'}
 # ---------------------------------------------TURMAS------------------------------------------------ #
 
     def test_001_turmas_retorna_lista(self):
