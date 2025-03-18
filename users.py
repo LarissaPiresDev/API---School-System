@@ -1,8 +1,8 @@
 users = {
     "Professores": [
-        {"id": 1, "nome": "Simonica", "idade": 34, "materia": "matematica", "observacoes": "solteira"},
-        {"id": 2, "nome": "Ione", "idade": 35, "materia": "portugues", "observacoes": "casada"},
-        {"id": 3, "nome": "Francisco", "idade": 74, "materia": "Ed. Fisica", "observacoes": "viuvo"}
+        {"id": 1, "nome": "Simonica", "idade": 34, "materia": "matematica", "salario": 3500.00},
+        {"id": 2, "nome": "Ione", "idade": 35, "materia": "portugues", "salario": 3800.00},
+        {"id": 3, "nome": "Francisco", "idade": 74, "materia": "Ed. Fisica", "salario": 5200.00}
     ],
 
     "Turmas": [
