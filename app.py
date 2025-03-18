@@ -33,6 +33,15 @@ def profPorId(id):
 def criar_professor():
     dict = request.json
 
+    chaves_esperadas = {'nome', 'idade', 'materia', 'salario'}
+    chaves_inseridas = set(dict.keys())
+
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
     if not dict.get('nome') or not dict.get('materia'):
         return jsonify({'mensagem': 'Para criar um novo professor preciso que voce me passe os parâmetros nome e materia'}), 400
     
@@ -58,8 +67,8 @@ def criar_professor():
         return jsonify({'mensagem': 'Idade não pode ser negativa!!'}), 400
 
     if dict['salario'] < 1400.00:
-        return jsonify({'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'}), 400   
-
+        return jsonify({'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'}), 400
+    
 
     id_novo = max([professor['id'] for professor in users['Professores']]) + 1
     dict['id'] = id_novo
