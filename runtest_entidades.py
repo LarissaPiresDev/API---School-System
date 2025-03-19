@@ -378,6 +378,57 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}, resp_retornada)
 
+    def test_010_se_idade_for_menor_igual_que_zero(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": -1,
+            "turma_id": 11
+        }
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resp_retornada)
+
+    def test_011_se_data_nascimento_nao_for_string(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": 13,
+            "turma_id": 11,
+            "data_nascimento": 2
+        }
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}, resp_retornada)
+
+
+    def test_012_se_as_notas_do_semestre_um_ou_2_junto_da_media_nao_forem_inteiros_ou_float(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": 13,
+            "turma_id": 11,
+            "nota_primeiro_semestre": "oito",
+            "nota_segundo_semestre": 10.0,
+            "media_final": 9.0
+        }
+
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        print(resp_retornada)
+        self.assertEqual({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}, resp_retornada)
+
+    
+    def test_013_se_notas_ou_media_inserida_forem_negativas(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": 13,
+            "turma_id": 11,
+            "nota_primeiro_semestre": -10,
+            "nota_segundo_semestre": 10,
+            "media_final": 0
+        }
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        print(resp_retornada)
+        self.assertEqual({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}, resp_retornada)
 
 
     
