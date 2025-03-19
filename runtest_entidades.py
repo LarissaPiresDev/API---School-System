@@ -13,7 +13,7 @@ class TestStringMethods(unittest.TestCase):
 
         try:
             obj_retornado = resposta.json()
-        
+
         except:
             self.fail("queria um json mas voce retornou outra coisa")
 
@@ -162,6 +162,43 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertIn('chaves_invalidas', resp_retornada)
         self.assertEqual(set(resp_retornada['chaves_invalidas']), {'endereco', 'telefone'})
+
+    def test_015_se_id_nao_for_int_no_put(self):
+        resposta = requests.get('http://localhost:5003/professores/1.5')
+        
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}, resp_retornada)
+    
+    def test_016_se_id_de_professor_no_put_menor_igual_que_zero(self):
+        resposta = requests.get('http://localhost:5003/professores/-1')
+        resp_retornada = resposta.json()                
+        self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}, resp_retornada)
+
+    def test_017_se_tem_chaves_invalidas_no_put(self):
+        novo_professor = {
+            "nome": "João",
+            "idade": 55,
+            "materia": "Artes e Flisofia",
+            "endereco": "Ser ou não ser 1040b",
+            "telefone": "4002-8922"
+        }
+        resposta = requests.post('http://localhost:5003/professores/5', json=novo_professor)
+        resp_retornada = resposta.json()
+        self.assertIn('chaves_invalidas', resp_retornada)
+        self.assertEqual(set(resp_retornada['chaves_invalidas']), {'endereco', 'telefone'})
+
+    def test_18_se_no_put_nome_e_string_ou_esta_vazio(self):
+
+        novo_professor = {
+            "nome": 15,
+            "idade": 55,
+            "materia": "Artes e Flisofia",
+        }
+        resposta = requests.post('http://localhost:5003/professores/5', json=novo_professor)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'Para realizar atualização de professor valor para a chave nome precisa ser do tipo STRING e não pode estar vazia'}, resp_retornada)
+
+    
 
         # ---------------------------------------------TURMAS------------------------------------------------ #
 
