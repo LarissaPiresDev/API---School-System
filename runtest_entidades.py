@@ -431,9 +431,20 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}, resp_retornada)
 
 
-    
+    def test_040_se_tem_chaves_invalidas(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": 13,
+            "turma_id": 11,
+            "data_nascimento": "12-10-2011",
+            "nota_primeiro_semestre": 10,
+            "nota_segundo_semestre": 10,
+            "media_final": 10,
+            "nome_do_responsavel": "Josiane de Paula",
+            "endereço": "Cid. Tiradentes SP, 404- ZL"
+        }
 
-
-
-
-
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        self.assertIn('chaves_invalidas', resp_retornada)
+        self.assertEqual(set(resp_retornada['chaves_invalidas']), {'nome_do_responsavel', 'endereço'})
