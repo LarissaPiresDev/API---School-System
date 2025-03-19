@@ -183,6 +183,47 @@ def alunoPorId(id):
     
     return jsonify({'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'}), 404
 
+@app.route('/alunos', methods=['POST'])
+def criar_aluno():
+    dict = request.json
+
+    if 'nome' not in dict or 'turma_id' not in dict:
+        return jsonify({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}), 400
+    
+    if dict['turma_id'] < 0:
+        return jsonify({'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'}), 400
+
+    turma_existe = False
+    for turma in users['Turmas']:
+        if turma['id'] == dict['turma_id']:
+            turma_existe = True
+            break
+    if not turma_existe:
+        return jsonify({'mensagem': 'Chave turma_id Inválida ou não essa turma não existe'}), 400
+    
+    if not (isinstance(dict['nome'], str)):
+        return jsonify({'mensagem': 'Chave nome precisa ser do tipo string'}), 400
+    
+    if not isinstance(dict['turma_id', int]) or not isinstance(dict['idade'], int): 
+        return jsonify({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}), 400
+    
+
+
+    if 'nota_primeiro_semestre' not in dict:
+        dict['nota_primeiro_semestre'] = 0.0
+    if 'nota_segundo_semestre' not in dict:
+        dict['nota_segundo_semestre'] = 0.0
+    if 'media_final' not in dict:
+        dict['media_final'] = 0.0
+
+    id_novo = max([id['id'] for aluno in users['Alunos']]) + 1
+    dict['id'] = id_novo
+    users['Alunos'].append(dict)
+
+    return jsonify(dict), 201 
+
+
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port = 5003,debug=True)
