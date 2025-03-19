@@ -113,6 +113,20 @@ def atualizar_professor(id):
         
         if idade < 18:
             return jsonify({'mensagem': 'Idade professor não pode ser negativa ou menor que 18 anos'}), 400
+        
+    if 'materia' in prof_atualizado:
+        if not isinstance(prof_atualizado['materia'], str) or not prof_atualizado['materia'].strip():
+            return jsonify({'mensagem': 'O valor inserido em chave matéria precisa ser do tipo String e não pode estar vazia'}), 400
+
+
+    if 'salario' in prof_atualizado:
+        try:
+            salario = float(prof_atualizado['salario'])
+        except ValueError:
+            return jsonify({'mensagem': 'O valor da chave salário precisa ser do um número com ponto flutuante (FLOAT, ex: 1400.0), ou int(1400) para que possa existir a converção'}), 400
+
+        if salario < 1400:
+            return jsonify({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}), 400
 
 
 
