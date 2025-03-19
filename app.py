@@ -12,7 +12,7 @@ def get_professores():
     professores = users['Professores']
     return jsonify(professores)
 
-@app.route('/professores/<int:id>', methods=['GET'])
+@app.route('/professores/<id>', methods=['GET'])
 def profPorId(id):
     try:
         id = int(id)
@@ -76,15 +76,15 @@ def criar_professor():
 
     return jsonify(users['Professores']), 201 
 
-@app.route('/professores/<int:id>', methods=['PUT'])
+@app.route('/professores/<id>', methods=['PUT'])
 def atualizar_professor(id):
     try:
         id = int(id)
     except ValueError:
-        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'})
+        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}), 404
     
     if id <= 0:
-        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'})
+        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}), 404
     
     prof_atualizado = request.json
     
@@ -100,6 +100,24 @@ def atualizar_professor(id):
     
     if 'nome' in prof_atualizado and (not isinstance(prof_atualizado['nome'], str) or not prof_atualizado['nome'].strip()):
         return jsonify({'mensagem': 'Para realizar atualização de professor valor para a chave nome precisa ser do tipo STRING e não pode estar vazia'}), 400
+    
+    
+    if 'idade' in prof_atualizado:
+        try:
+            idade = int(prof_atualizado['idade'])
+        except ValueError:
+            return jsonify({'mensagem': 'Essa nova idade para professor está inválida, idade tem que ser obrigatóriamente do tipo INTEIRO'}), 400
+        
+        if idade > 120:
+            return jsonify({'mensagem': 'Essa nova idade está muito avançada para dar aulas, talvez nem esteja vivo'}), 400
+        
+        if idade < 18:
+            return jsonify({'mensagem': 'Idade professor não pode ser negativa ou menor que 18 anos'}), 400
+
+
+
+
+
 
     professores = users['Professores']
     for index, professor in enumerate(professores):
