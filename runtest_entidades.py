@@ -239,6 +239,44 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'Idade professor não pode ser negativa ou menor que 18 anos'}, resp_retornada)
 
+    def test_022_se_materia_nao_for_string_no_put(self):
+        prof_atualizado = {
+            "nome": "João",
+            "idade": 55,
+            "materia": 12345, 
+            "salario": 1500.0
+        }
+
+        resposta = requests.put('http://localhost:5003/professores/1', json=prof_atualizado)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'O valor inserido em chave matéria precisa ser do tipo String e não pode estar vazia'}, resp_retornada)
+
+    def test_023_se_salario_nao_for_float_ou_int_no_put(self):
+        prof_atualizado = {
+            "nome": "João",
+            "idade": 55,
+            "materia": "Artes e Filosofia",
+            "salario": "mil e quinhentos"
+        }
+
+        resposta = requests.put('http://localhost:5003/professores/1', json=prof_atualizado)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'O valor da chave salário precisa ser do um número com ponto flutuante (FLOAT, ex: 1400.0), ou int(1400) para que possa existir a converção'}, resp_retornada)
+
+    def test_024_se_salario_for_menor_que_1400_no_put(self):
+        prof_atualizado = {
+            "nome": "João",
+            "idade": 55,
+            "materia": "Artes e Filosofia",
+            "salario": 1200.0  
+        }
+
+        resposta = requests.put('http://localhost:5003/professores/1', json=prof_atualizado)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}, resp_retornada)
+
+
+
 
     
 
