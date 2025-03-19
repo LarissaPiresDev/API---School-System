@@ -165,7 +165,7 @@ class TestStringMethods(unittest.TestCase):
 
         # ---------------------------------------------TURMAS------------------------------------------------ #
 
-    def test_001_turmas_retorna_lista(self):
+    def test_015_turmas_retorna_lista(self):
         resposta = requests.get('http://localhost:5003/turmas')
 
         
@@ -180,26 +180,26 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(type(obj_retornado),type([]))
 
-    def test_002_id_de_turma_não_int(self):
+    def test_016_id_de_turma_não_int(self):
         resposta = requests.get('http://localhost:5003/turmas/1.5')
         if resposta.status_code == 400:
             resp_retornada = resposta.json()
             self.assertEqual({'mensagem': 'ID inserido para turma precisa ser um numero inteiro'}, resp_retornada)
 
-    def test_003_id_de_turma_menor_igual_que_zero(self):
+    def test_017_id_de_turma_menor_igual_que_zero(self):
         resposta = requests.get('http://localhost:5003/turmas/-1')
         if resposta.status_code == 400:
             resp_retornada = resposta.json()                
             self.assertEqual({'mensagem': 'ID de turma nao pode ser menor ou igual a que zero'}, resp_retornada)
 
 
-    def test_004_id_de_turma_inexistente(self):
+    def test_018_id_de_turma_inexistente(self):
         resposta = requests.get('http://localhost:5003/turmas/500')
         if resposta.status_code == 404:
             resp_retornada = resposta.json()
             self.assertEqual({'mensagem': 'Turma nao encontrada/inexistente'}, resp_retornada)
     
-    def test_005_se_em_turma_as_chaves_professor_id_e_descricao_nao_forem_informados(self):
+    def test_019_se_em_turma_as_chaves_professor_id_e_descricao_nao_forem_informados(self):
         nova_turma = {
             "descricao": "7 ano D",
             "ativo": True
@@ -209,7 +209,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}, resp_retornada)
     
-    def test_006_se_a_chave_descricao_nao_for_string_ou_esta_vazia(self):
+    def test_020_se_a_chave_descricao_nao_for_string_ou_esta_vazia(self):
         nova_turma = {
             "descricao": "  ",
             "ativo": True,
@@ -220,7 +220,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'decricao precisa ser uma STRING e/ou não pode estar vazia'}, resp_retornada)
     
-    def test_007_verifica_se_chave_ativa_foi_informada_e_se_seu_tipo_e_boolean(self):
+    def test_021_verifica_se_chave_ativa_foi_informada_e_se_seu_tipo_e_boolean(self):
         nova_turma = {
             "descricao": "7 ano D",
             "ativo": 12,
@@ -230,7 +230,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'}, resp_retornada)
 
-    def test_008_caso_descricao_inserida_em_turma_ja_esteja_em_nosso_banco_de_dados(self):
+    def test_022_caso_descricao_inserida_em_turma_ja_esteja_em_nosso_banco_de_dados(self):
         nova_turma = {
             "descricao": "7 ano A",
             "ativo": True,
@@ -239,7 +239,7 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
         resp_retornada = resposta.json()
         self.assertEqual( {'mensagem': f'A turma com a descricao {nova_turma["descricao"].title()} ja existe'}, resp_retornada)
-    def test_009_caso_professor_id_inserido_ja_esteje_responsavel_por_alguma_turma(self):
+    def test_023_caso_professor_id_inserido_ja_esteje_responsavel_por_alguma_turma(self):
 
         nova_turma = {
             "descricao": "7 ano D",
@@ -252,7 +252,7 @@ class TestStringMethods(unittest.TestCase):
     
 
 
-    def test_010_caso_professor_id_nao_seja_int(self):
+    def test_024_caso_professor_id_nao_seja_int(self):
         nova_turma = {
             "descricao": "7 ano D",
             "ativo": True,
@@ -262,7 +262,7 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
         resp_retornada = resposta.json() 
         self.assertEqual({'mensagem': 'A chave professor_id precisa ser um número INTEIRO'}, resp_retornada)
-    def test_011_se_professor_id_for_menor_igual_a_zero(self):
+    def test_025_se_professor_id_for_menor_igual_a_zero(self):
         nova_turma = {
             "descricao": "7 ano D",
             "ativo": True,
@@ -273,7 +273,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json() 
         self.assertEqual({'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'}, resp_retornada)
 
-    def test_012_caso_tenha_chaves_invalidas(self):
+    def test_026_caso_tenha_chaves_invalidas(self):
         nova_turma = {
             "descricao": "7 ano D",
             "ativo": True,
@@ -290,7 +290,7 @@ class TestStringMethods(unittest.TestCase):
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 
-    def test_001_alunos_retorna_lista(self):
+    def test_027_alunos_retorna_lista(self):
         resposta = requests.get('http://localhost:5003/alunos')
 
         if resposta.status_code == 404:
@@ -304,27 +304,27 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(type(obj_retornado),type([]))
 
-    def test_002_id_de_aluno_não_int(self):
+    def test_028_id_de_aluno_não_int(self):
         resposta = requests.get('http://localhost:5003/alunos/1.5')
         if resposta.status_code == 400:
             resp_retornada = resposta.json()
             self.assertEqual ({'mensagem': 'ID inserido para aluno tem que ser um numero inteiro'}, resp_retornada)
 
-    def test_003_id_de_aluno_menor_igual_que_zero(self):
+    def test_029_id_de_aluno_menor_igual_que_zero(self):
         resposta = requests.get('http://localhost:5003/alunos/-1')
         if resposta.status_code == 400:
             resp_retornada = resposta.json()  
             self.assertEqual({'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'}, resp_retornada)
 
 
-    def test_004_id_de_aluno_inexistente(self):
+    def test_030_id_de_aluno_inexistente(self):
         resposta = requests.get('http://localhost:5003/alunos/500')
         if resposta.status_code == 404:
             resp_retornada = resposta.json()
             self.assertEqual({'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'}, resp_retornada)
 
 
-    def test_005_se_nome_e_turma_id_nao_forem_inseridos(self):
+    def test_031_se_nome_e_turma_id_nao_forem_inseridos(self):
         novo_aluno = {
             "idade": 13,
             "turma_id": 4,
@@ -335,7 +335,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}, resp_retornada)
 
-    def test_006_se_turma_id_for_menor_que_zero(self):
+    def test_032_se_turma_id_for_menor_que_zero(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -345,7 +345,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'}, resp_retornada)
     
-    def test_007_se_turma_id_não_existe(self):
+    def test_033_se_turma_id_não_existe(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -355,7 +355,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'Chave turma_id Inválida ou não essa turma não existe'}, resp_retornada)
 
-    def test_008_se_nome_nao_for_string(self):
+    def test_034_se_nome_nao_for_string(self):
         novo_aluno = {
             "nome": 50,
             "idade": 13,
@@ -368,7 +368,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'Chave nome precisa ser do tipo string'}, resp_retornada)
 
 
-    def test_009_se_turma_id_ou_idade_nao_forem_inteiros(self):
+    def test_035_se_turma_id_ou_idade_nao_forem_inteiros(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": "treze",
@@ -378,7 +378,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}, resp_retornada)
 
-    def test_010_se_idade_for_menor_igual_que_zero(self):
+    def test_036_se_idade_for_menor_igual_que_zero(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": -1,
@@ -388,7 +388,7 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resp_retornada)
 
-    def test_011_se_data_nascimento_nao_for_string(self):
+    def test_037_se_data_nascimento_nao_for_string(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -400,7 +400,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}, resp_retornada)
 
 
-    def test_012_se_as_notas_do_semestre_um_ou_2_junto_da_media_nao_forem_inteiros_ou_float(self):
+    def test_038_se_as_notas_do_semestre_um_ou_2_junto_da_media_nao_forem_inteiros_ou_float(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -416,7 +416,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}, resp_retornada)
 
     
-    def test_013_se_notas_ou_media_inserida_forem_negativas(self):
+    def test_039_se_notas_ou_media_inserida_forem_negativas(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
