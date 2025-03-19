@@ -116,6 +116,9 @@ def criar_turma():
 
     if not isinstance(dict['professor_id'], int):
          return jsonify({'mensagem': 'a chave professor_id precisa ser um número INTEIRO'}), 400
+    
+    if dict['professor_id'] <= 0:
+        return jsonify({'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'}), 400
 
 
     if 'ativo' in dict and not isinstance(dict['ativo'], bool):
