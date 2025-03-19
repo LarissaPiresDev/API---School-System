@@ -238,7 +238,17 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
         resp_retornada = resposta.json()
         assert {'mensagem': f'A turma com a descricao {nova_turma["descricao"].title()} ja existe'} == resp_retornada
-    
+
+    def test_009_caso_professor_id_inserido_ja_esteje_responsavel_por_alguma_turma(self):
+
+        nova_turma = {
+            "descricao": "7 ano D",
+            "ativo": True,
+            "professor_id": 2
+        }
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'} == resp_retornada
     
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
