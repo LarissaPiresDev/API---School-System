@@ -112,6 +112,10 @@ def criar_turma():
     
     if not isinstance(dict['descricao'], str) or not dict['descricao'].strip():
         return jsonify({'mensagem': 'decricao precisa ser uma STRING e/ou não pode estar vazia'}), 400
+    
+
+    if not isinstance(dict['professor_id'], int):
+         return jsonify({'mensagem': 'a chave professor_id precisa ser um número INTEIRO'}), 400
 
 
     if 'ativo' in dict and not isinstance(dict['ativo'], bool):
@@ -141,6 +145,7 @@ def criar_turma():
     users['Turmas'].append(dict)
 
     return jsonify(dict), 201 
+
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 @app.route('/alunos/', methods=['GET'])
 @app.route('/alunos', methods=['GET'])
