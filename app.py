@@ -60,7 +60,7 @@ def criar_professor():
     if novo_professor['idade'] >= 0 and novo_professor['idade'] < 18:
         return jsonify({'mensagem': 'Um professor precisa ter no minimo 18 anos'}), 400
 
-    if novo_professor['idade'] >= 18 and novo_professor['idade'] >= 120:
+    if novo_professor['idade'] >= 120:
         return jsonify({'mensagem': 'Esse professor não tem condiçoes de dar aula, idade muito alta'}), 400
 
     if novo_professor['idade'] < 0:
@@ -188,6 +188,17 @@ def alunoPorId(id):
 def criar_aluno():
     novo_aluno = request.json
 
+    chaves_esperadas = {'nome', 'idade', 'turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre', 'media_final'}
+
+    chaves_inseridas = set(novo_aluno.keys())
+
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias para a criação de aluno, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+    
     if 'nome' not in novo_aluno or 'turma_id' not in novo_aluno:
         return jsonify({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}), 400
     
