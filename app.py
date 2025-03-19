@@ -124,7 +124,7 @@ def criar_turma():
     
 
     if not isinstance(dict['professor_id'], int):
-         return jsonify({'mensagem': 'a chave professor_id precisa ser um número INTEIRO'}), 400
+         return jsonify({'mensagem': 'A chave professor_id precisa ser um número INTEIRO'}), 400
     
     if dict['professor_id'] <= 0:
         return jsonify({'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'}), 400
@@ -148,6 +148,7 @@ def criar_turma():
         
         if turma['professor_id'] == dict['professor_id']:
             return jsonify({'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'}), 400
+        
     
     if 'ativo' not in dict:
         dict['ativo'] = False
@@ -204,9 +205,34 @@ def criar_aluno():
     if not (isinstance(dict['nome'], str)):
         return jsonify({'mensagem': 'Chave nome precisa ser do tipo string'}), 400
     
-    if not isinstance(dict['turma_id', int]) or not isinstance(dict['idade'], int): 
+    if not isinstance(dict.get('turma_id'), int) or not isinstance(dict.get('idade'), int):
         return jsonify({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}), 400
     
+    if dict['idade'] <= 0:
+        return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}),400
+    
+    if 'data_nascimento' in dict and not isinstance(dict.get('data_nascimento'), str):
+        return jsonify({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}),400
+    
+    if not isinstance(dict['nota_primeiro_semestre'], (int, float)):
+        return jsonify({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
+    
+    if not isinstance(dict['nota_segundo_semestre'], (int, float)):
+        return jsonify({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
+    
+    if not isinstance(dict['media_final'], (int, float)):
+        return jsonify({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
+
+    if dict['nota_primeiro_semestre'] < 0:
+        return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'})
+    
+    if dict['nota_segundo_semestre'] < 0:
+        return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'})
+    
+    if dict['media_final'] < 0:
+        return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'})
+    
+
 
 
     if 'nota_primeiro_semestre' not in dict:
