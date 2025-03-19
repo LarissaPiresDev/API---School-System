@@ -273,6 +273,19 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
         resp_retornada = resposta.json() 
         assert {'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'} == resp_retornada
+
+    def test_012_caso_tenha_chaves_invalidas(self):
+        nova_turma = {
+            "descricao": "7 ano D",
+            "ativo": True,
+            "professor_id": 4,
+            "melhor_nota": 10
+        }
+
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
+        resp_retornada = resposta.json()
+        assert 'chaves_invalidas' in resp_retornada
+        assert set(resp_retornada['chaves_invalidas']) == {'melhor_nota'}
     
 
 
