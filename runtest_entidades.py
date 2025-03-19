@@ -251,6 +251,31 @@ class TestStringMethods(unittest.TestCase):
         assert {'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'} == resp_retornada
     
 
+
+    def test_011_caso_professor_id_nao_seja_int(self):
+        nova_turma = {
+            "descricao": "7 ano D",
+            "ativo": True,
+            "professor_id": "oito"
+        }
+                
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
+        resp_retornada = resposta.json() 
+        assert {'mensagem': 'A chave professor_id precisa ser um número INTEIRO'}
+
+    def test_011_se_professor_id_for_menor_igual_a_zero(self):
+        nova_turma = {
+            "descricao": "7 ano D",
+            "ativo": True,
+            "professor_id": -1
+        }
+
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
+        resp_retornada = resposta.json() 
+        assert {'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'} == resp_retornada
+    
+
+
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 
     def test_001_alunos_retorna_lista(self):
