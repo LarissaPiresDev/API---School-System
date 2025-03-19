@@ -325,3 +325,65 @@ class TestStringMethods(unittest.TestCase):
             assert {'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'} == resp_retornada
 
 
+    def test_005_se_nome_e_turma_id_nao_forem_inseridos(self):
+        novo_aluno = {
+            "idade": 13,
+            "turma_id": 4,
+            "nota_primeiro_semestre": 5
+        }
+
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'} == resp_retornada
+
+    def test_006_se_turma_id_for_menor_que_zero(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": 13,
+            "turma_id": -1,
+        }
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'} == resp_retornada
+    
+    def test_007_se_turma_id_não_existe(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": 13,
+            "turma_id": 10,
+        }
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'Chave turma_id Inválida ou não essa turma não existe'} == resp_retornada
+
+    def test_008_se_nome_nao_for_string(self):
+        novo_aluno = {
+            "nome": 50,
+            "idade": 13,
+            "turma_id": 11,
+            "nota_primeiro_semestre": 5
+        }
+
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'Chave nome precisa ser do tipo string'} == resp_retornada
+
+
+    def test_009_se_turma_id_ou_idade_nao_forem_inteiros(self):
+        novo_aluno = {
+            "nome": "Jose Paulo",
+            "idade": "treze",
+            "turma_id": 11,
+        }
+        resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        resp_retornada = resposta.json()
+        assert {'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'} == resp_retornada
+
+        
+
+    
+
+
+
+
+
