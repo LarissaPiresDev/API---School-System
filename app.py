@@ -107,6 +107,15 @@ def turmaPorId(id):
 def criar_turma():
     dict = request.json
 
+    chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
+    chaves_inseridas = set(dict.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+
     if 'professor_id' not in dict or 'descricao' not in dict:
         return jsonify({'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}), 400
     
