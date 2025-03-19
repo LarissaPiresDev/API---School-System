@@ -12,7 +12,7 @@ def get_professores():
     professores = users['Professores']
     return jsonify(professores)
 
-@app.route('/professores/<id>', methods=['GET'])
+@app.route('/professores/<int:id>', methods=['GET'])
 def profPorId(id):
     try:
         id = int(id)
@@ -75,7 +75,41 @@ def criar_professor():
     users['Professores'].append(novo_professor)
 
     return jsonify(users['Professores']), 201 
+
+@app.route('/professores/<int:id>', methods=['PUT'])
+def atualizar_professor(id):
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'})
     
+    if id <= 0:
+        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'})
+    
+    prof_atualizado = request.json
+    
+    
+    chaves_esperadas = {'nome', 'idade', 'materia', 'salario'}
+    chaves_inseridas = set(prof_atualizado.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias para atualização, por favor retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+    
+    if 'nome' in prof_atualizado and (not isinstance(prof_atualizado['nome'], str) or not prof_atualizado['nome'].strip()):
+        return jsonify({'mensagem': 'Para realizar atualização de professor valor para a chave nome precisa ser do tipo STRING e não pode estar vazia'}), 400
+
+    professores = users['Professores']
+    for index, professor in enumerate(professores):
+        if professor['id'] == id:
+            prof_atualizado['id'] = professor['id']
+            users['Professores'][index] = prof_atualizado
+            return jsonify({'mensagem': f'Professor {prof_atualizado["nome"]} atualizado com sucesso'}), 200
+    return jsonify({'mensagem': 'id não encontrado'}), 404
+            
+
 
 
 # ---------------------------------------------TURMAS------------------------------------------------ #
