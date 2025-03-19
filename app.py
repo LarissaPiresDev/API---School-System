@@ -186,67 +186,56 @@ def alunoPorId(id):
 
 @app.route('/alunos', methods=['POST'])
 def criar_aluno():
-    dict = request.json
+    novo_aluno = request.json
 
-    if 'nome' not in dict or 'turma_id' not in dict:
+    if 'nome' not in novo_aluno or 'turma_id' not in novo_aluno:
         return jsonify({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}), 400
     
-    if dict['turma_id'] < 0:
+    if novo_aluno['turma_id'] < 0:
         return jsonify({'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'}), 400
 
     turma_existe = False
     for turma in users['Turmas']:
-        if turma['id'] == dict['turma_id']:
+        if turma['id'] == novo_aluno['turma_id']:
             turma_existe = True
             break
     if not turma_existe:
         return jsonify({'mensagem': 'Chave turma_id Inválida ou não essa turma não existe'}), 400
     
-    if not (isinstance(dict['nome'], str)):
+    if not (isinstance(novo_aluno['nome'], str)):
         return jsonify({'mensagem': 'Chave nome precisa ser do tipo string'}), 400
     
-    if not isinstance(dict.get('turma_id'), int) or not isinstance(dict.get('idade'), int):
+    if not isinstance(novo_aluno['turma_id'], int) or not isinstance(novo_aluno['idade'], int):
         return jsonify({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}), 400
     
-    if dict['idade'] <= 0:
+    if novo_aluno['idade'] <= 0:
         return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}),400
     
-    if 'data_nascimento' in dict and not isinstance(dict.get('data_nascimento'), str):
+    if 'data_nascimento' in novo_aluno and not isinstance(novo_aluno.get('data_nascimento'), str):
         return jsonify({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}),400
     
-    if not isinstance(dict['nota_primeiro_semestre'], (int, float)):
-        return jsonify({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
-    
-    if not isinstance(dict['nota_segundo_semestre'], (int, float)):
-        return jsonify({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
-    
-    if not isinstance(dict['media_final'], (int, float)):
+    if not isinstance(novo_aluno['nota_primeiro_semestre'], (int, float)) or not isinstance(novo_aluno['nota_segundo_semestre'], (int, float)) or not isinstance(novo_aluno['media_final'], (int, float)):
         return jsonify({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
 
-    if dict['nota_primeiro_semestre'] < 0:
-        return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'})
+    if novo_aluno['nota_primeiro_semestre'] < 0 or novo_aluno['nota_segundo_semestre'] < 0 or novo_aluno['media_final'] < 0:
+        return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}), 400
     
-    if dict['nota_segundo_semestre'] < 0:
-        return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'})
-    
-    if dict['media_final'] < 0:
-        return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'})
     
 
 
 
-    if 'nota_primeiro_semestre' not in dict:
-        dict['nota_primeiro_semestre'] = 0.0
-    if 'nota_segundo_semestre' not in dict:
-        dict['nota_segundo_semestre'] = 0.0
-    if 'media_final' not in dict:
-        dict['media_final'] = 0.0
+    if 'nota_primeiro_semestre' not in novo_aluno:
+        novo_aluno['nota_primeiro_semestre'] = 0.0
+    if 'nota_segundo_semestre' not in novo_aluno:
+        novo_aluno['nota_segundo_semestre'] = 0.0
+    if 'media_final' not in novo_aluno:
+        novo_aluno['media_final'] = 0.0
 
-    id_novo = max([id['id'] for aluno in users['Alunos']]) + 1
-    dict['id'] = id_novo
-    users['Alunos'].append(dict)
+    id_novo = max([aluno['id'] for aluno in users['Alunos']]) + 1
+    novo_aluno['id'] = id_novo
+    users['Alunos'].append(novo_aluno)
 
-    return jsonify(dict), 201 
+    return jsonify(novo_aluno), 201 
 
 
 
