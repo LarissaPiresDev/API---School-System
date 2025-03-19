@@ -31,10 +31,10 @@ def profPorId(id):
 
 @app.route('/professores', methods=['POST'])
 def criar_professor():
-    dict = request.json
+    novo_professor = request.json
 
     chaves_esperadas = {'nome', 'idade', 'materia', 'salario'}
-    chaves_inseridas = set(dict.keys())
+    chaves_inseridas = set(novo_professor.keys())
 
     chaves_invalidas = chaves_inseridas - chaves_esperadas
     if chaves_invalidas:
@@ -42,37 +42,37 @@ def criar_professor():
             'mensagem': 'Chaves adicionais não necessárias, retire-as',
             'chaves_invalidas': list(chaves_invalidas)
         }), 400
-    if not dict.get('nome') or not dict.get('materia'):
+    if not novo_professor.get('nome') or not novo_professor.get('materia'):
         return jsonify({'mensagem': 'Para criar um novo professor preciso que voce me passe os parâmetros nome e materia'}), 400
     
-    if 'idade' not in dict:
+    if 'idade' not in novo_professor:
         return jsonify({'mensagem': 'Idade e obrigatoria, por favor insira-a'}), 400
     
-    if not isinstance(dict['nome'], str) or not isinstance(dict['materia'], str):
+    if not isinstance(novo_professor['nome'], str) or not isinstance(novo_professor['materia'], str):
         return jsonify({'mensagem': 'Os parametros nome e/ou materia precisam ser do tipo STRING'}), 400
     
-    if not isinstance(dict['idade'], int):
+    if not isinstance(novo_professor['idade'], int):
         return jsonify({'mensagem': 'Idade precisa ser um número INTEIRO'}), 400
     
-    if not isinstance(dict['salario'], (int, float)):
+    if not isinstance(novo_professor['salario'], (int, float)):
         return jsonify({'mensagem':'O parametro de salário precisa ser um número do tipo float ou int'}), 400
     
-    if dict['idade'] >= 0 and dict['idade'] < 18:
+    if novo_professor['idade'] >= 0 and novo_professor['idade'] < 18:
         return jsonify({'mensagem': 'Um professor precisa ter no minimo 18 anos'}), 400
 
-    if dict['idade'] >= 18 and dict['idade'] >= 120:
+    if novo_professor['idade'] >= 18 and novo_professor['idade'] >= 120:
         return jsonify({'mensagem': 'Esse professor não tem condiçoes de dar aula, idade muito alta'}), 400
 
-    if dict['idade'] < 0:
+    if novo_professor['idade'] < 0:
         return jsonify({'mensagem': 'Idade não pode ser negativa!!'}), 400
 
-    if dict['salario'] < 1400.00:
+    if novo_professor['salario'] < 1400.00:
         return jsonify({'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'}), 400
     
 
     id_novo = max([professor['id'] for professor in users['Professores']]) + 1
-    dict['id'] = id_novo
-    users['Professores'].append(dict)
+    novo_professor['id'] = id_novo
+    users['Professores'].append(novo_professor)
 
     return jsonify(users['Professores']), 201 
     
@@ -105,10 +105,10 @@ def turmaPorId(id):
 
 @app.route('/turmas', methods=['POST'])
 def criar_turma():
-    dict = request.json
+    nova_turma = request.json
 
     chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
-    chaves_inseridas = set(dict.keys())
+    chaves_inseridas = set(nova_turma.keys())
     chaves_invalidas = chaves_inseridas - chaves_esperadas
     if chaves_invalidas:
         return jsonify({
@@ -116,48 +116,48 @@ def criar_turma():
             'chaves_invalidas': list(chaves_invalidas)
         }), 400
 
-    if 'professor_id' not in dict or 'descricao' not in dict:
+    if 'professor_id' not in nova_turma or 'descricao' not in nova_turma:
         return jsonify({'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}), 400
     
-    if not isinstance(dict['descricao'], str) or not dict['descricao'].strip():
+    if not isinstance(nova_turma['descricao'], str) or not nova_turma['descricao'].strip():
         return jsonify({'mensagem': 'decricao precisa ser uma STRING e/ou não pode estar vazia'}), 400
     
 
-    if not isinstance(dict['professor_id'], int):
+    if not isinstance(nova_turma['professor_id'], int):
          return jsonify({'mensagem': 'A chave professor_id precisa ser um número INTEIRO'}), 400
     
-    if dict['professor_id'] <= 0:
+    if nova_turma['professor_id'] <= 0:
         return jsonify({'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'}), 400
 
 
-    if 'ativo' in dict and not isinstance(dict['ativo'], bool):
+    if 'ativo' in nova_turma and not isinstance(nova_turma['ativo'], bool):
         return jsonify({'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'}), 400
     
 
     prof_existe = False
     for professor in users['Professores']:
-        if professor['id'] == dict['professor_id']:
+        if professor['id'] == nova_turma['professor_id']:
             prof_existe = True
             break
     if not prof_existe:
         return jsonify({'mensagem':'O valor informado na chave professor_id é inexistente, coloque um id existente'}), 400
     
     for turma in users['Turmas']:
-        if turma['descricao'].lower() == dict['descricao'].lower():
+        if turma['descricao'].lower() == nova_turma['descricao'].lower():
             return jsonify({'mensagem': f'A turma com a descricao {turma["descricao"]} ja existe'}), 400
         
-        if turma['professor_id'] == dict['professor_id']:
+        if turma['professor_id'] == nova_turma['professor_id']:
             return jsonify({'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'}), 400
         
     
-    if 'ativo' not in dict:
-        dict['ativo'] = False
+    if 'ativo' not in nova_turma:
+        nova_turma['ativo'] = False
 
     id_novo = max([turma['id'] for turma in users['Turmas']]) + 1
-    dict['id'] = id_novo
-    users['Turmas'].append(dict)
+    nova_turma['id'] = id_novo
+    users['Turmas'].append(nova_turma)
 
-    return jsonify(dict), 201 
+    return jsonify(nova_turma), 201 
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 @app.route('/alunos/', methods=['GET'])
