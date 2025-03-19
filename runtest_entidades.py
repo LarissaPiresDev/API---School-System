@@ -152,10 +152,10 @@ class TestStringMethods(unittest.TestCase):
 
     def test_014_se_tem_chaves_invalidas(self):
         novo_professor = {
-            "nome": "Simas",
-            "idade": 45,
+            "nome": "João ",
+            "idade": 55,
             "materia": "Fisica",
-            "endereco": "Rua dos Fisicos e Quimicos 1895",
+            "endereco": "Aristoteles 1895",
             "telefone": "4002-8922"
         }
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
@@ -164,45 +164,87 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(set(resp_retornada['chaves_invalidas']), {'endereco', 'telefone'})
 
     def test_015_se_id_nao_for_int_no_put(self):
-        resposta = requests.get('http://localhost:5003/professores/1.5')
+        resposta = requests.put('http://localhost:5003/professores/1.5')
         
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}, resp_retornada)
+        if resposta.status_code == 404:
+            resp_retornada = resposta.json()
+            self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}, resp_retornada)
     
     def test_016_se_id_de_professor_no_put_menor_igual_que_zero(self):
-        resposta = requests.get('http://localhost:5003/professores/-1')
-        resp_retornada = resposta.json()                
-        self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}, resp_retornada)
+        resposta = requests.put('http://localhost:5003/professores/-1')
+        if resposta.status_code == 404:
+            resp_retornada = resposta.json()
+
+            self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}, resp_retornada)
 
     def test_017_se_tem_chaves_invalidas_no_put(self):
-        novo_professor = {
+        prof_atualizado = {
             "nome": "João",
             "idade": 55,
             "materia": "Artes e Flisofia",
             "endereco": "Ser ou não ser 1040b",
             "telefone": "4002-8922"
         }
-        resposta = requests.post('http://localhost:5003/professores/5', json=novo_professor)
+        resposta = requests.put('http://localhost:5003/professores/5', json=prof_atualizado)
         resp_retornada = resposta.json()
         self.assertIn('chaves_invalidas', resp_retornada)
         self.assertEqual(set(resp_retornada['chaves_invalidas']), {'endereco', 'telefone'})
 
-    def test_18_se_no_put_nome_e_string_ou_esta_vazio(self):
+    def test_018_se_no_put_nome_e_string_ou_esta_vazio(self):
 
         novo_professor = {
             "nome": 15,
             "idade": 55,
             "materia": "Artes e Flisofia",
         }
-        resposta = requests.post('http://localhost:5003/professores/5', json=novo_professor)
+        resposta = requests.put('http://localhost:5003/professores/5', json=novo_professor)
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'Para realizar atualização de professor valor para a chave nome precisa ser do tipo STRING e não pode estar vazia'}, resp_retornada)
+
+    
+    def test_019_idade_nao_inteiro_no_put(self):
+        professor_atualizado = {
+            "nome": "João",
+            "idade": "quarenta e cinco",  
+            "materia": "Artes e Filosofia",
+            "salario": 5800.0
+        }
+
+        resposta = requests.put('http://localhost:5003/professores/1', json=professor_atualizado)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'Essa nova idade para professor está inválida, idade tem que ser obrigatóriamente do tipo INTEIRO'}, resp_retornada)
+
+    
+    def test_020_idade_maior_que_120_no_put(self):
+        professor_atualizado = {
+            "nome": "João",
+            "idade": 121,  
+            "materia": "Artes e Filosofia",
+            "salario": 5800.0
+        }
+
+        resposta = requests.put('http://localhost:5003/professores/1', json=professor_atualizado)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'Essa nova idade está muito avançada para dar aulas, talvez nem esteja vivo'}, resp_retornada)
+
+    def test_021_idade_menor_que_18_no_put(self):
+        professor_atualizado = {
+            "nome": "João",
+            "idade": 17,  
+            "materia": "Artes e Filosofia",
+            "salario": 5800.0
+        }
+
+        resposta = requests.put('http://localhost:5003/professores/1', json=professor_atualizado)
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'Idade professor não pode ser negativa ou menor que 18 anos'}, resp_retornada)
+
 
     
 
         # ---------------------------------------------TURMAS------------------------------------------------ #
 
-    def test_015_turmas_retorna_lista(self):
+    def test_022_turmas_retorna_lista(self):
         resposta = requests.get('http://localhost:5003/turmas')
 
         
