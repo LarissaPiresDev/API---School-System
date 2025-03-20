@@ -275,6 +275,26 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         self.assertEqual({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}, resp_retornada)
 
+    def test_025_id_invalido_nao_inteiro_no_delete(self):
+        resposta = requests.delete('http://localhost:5003/professores/1.5')
+        
+        if resposta.status_code == 404:
+            resp_retornada = resposta.json()
+            self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro para que eu possa deletar'}, resp_retornada)
+
+    def test_026_id_invalido_menor_igual_zero_delete(self):
+        resposta = requests.delete('http://localhost:5003/professores/0')
+        
+        if resposta.status_code == 404:
+            resp_retornada = resposta.json()
+            self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO para que eu possa deletar'}, resp_retornada)
+    
+    def test_027_id_nao_encontrado_falha_ao_deletar(self):
+        resposta = requests.delete('http://localhost:5003/professores/9999')
+        
+        if resposta.status_code == 404:
+            resp_retornada = resposta.json()
+            self.assertEqual({'mensagem': 'id de professor não encontrado, falha ao deletar'}, resp_retornada)
 
 
 
