@@ -348,7 +348,25 @@ def criar_aluno():
     novo_aluno['id'] = id_novo
     users['Alunos'].append(novo_aluno)
 
-    return jsonify(novo_aluno), 201 
+    return jsonify(novo_aluno), 201
+
+@app.route('/alunos/<id>', methods=['DELETE'])
+def deletar_aluno(id):
+
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
+    
+    if id <= 0:
+        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
+    
+
+    for pos, aluno in enumerate(users['Alunos']):
+        if aluno['id'] == id:
+            users['Alunos'].pop(pos)
+            return jsonify({'mensagem': f'aluno {aluno["nome"]} deletado(a) com sucesso'}), 200
+    return jsonify({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}), 404 
 
 
 
