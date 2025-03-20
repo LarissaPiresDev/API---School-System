@@ -297,9 +297,7 @@ class TestStringMethods(unittest.TestCase):
             self.assertEqual({'mensagem': 'id de professor não encontrado, falha ao deletar'}, resp_retornada)
 
 
-
-    
-
+         
         # ---------------------------------------------TURMAS------------------------------------------------ #
 
     def test_022_turmas_retorna_lista(self):
@@ -422,6 +420,21 @@ class TestStringMethods(unittest.TestCase):
         resp_retornada = resposta.json()
         assert 'chaves_invalidas' in resp_retornada
         assert set(resp_retornada['chaves_invalidas']) == {'melhor_nota'}
+
+    def test_027_id_invalido_nao_inteiro_no_delete(self):
+        resposta = requests.delete('http://localhost:5003/turmas/1.5')
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser um número inteiro para que a turma possa ser deletada.'}, resp_retornada)
+
+    def test_028_id_invalido_menor_igual_zero_delete(self):
+        resposta = requests.delete('http://localhost:5003/turmas/0')
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser maior que zero para que a turma possa ser deletada.'}, resp_retornada)
+    
+    def test_029_id_nao_encontrado_falha_ao_deletar(self):
+        resposta = requests.delete('http://localhost:5003/turmas/9999')
+        resp_retornada = resposta.json()
+        self.assertEqual({'mensagem': 'ID de turma não encontrado/inexistente, falha ao deletar'}, resp_retornada)
     
 
 
