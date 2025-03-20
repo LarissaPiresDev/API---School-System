@@ -241,7 +241,25 @@ def criar_turma():
     nova_turma['id'] = id_novo
     users['Turmas'].append(nova_turma)
 
-    return jsonify(nova_turma), 201 
+    return jsonify(nova_turma), 201
+
+@app.route('/turmas/<id>', methods=['DELETE'])
+def deletar_turma(id):
+
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID de turma inválido. O ID precisa ser um número inteiro para que a turma possa ser deletada.'}), 400
+    
+    if id <= 0:
+        return jsonify({'mensagem': 'ID de turma inválido. O ID precisa ser maior que zero para que a turma possa ser deletada.'}), 400
+    
+
+    for pos, turma in enumerate(users['Turmas']):
+        if turma['id'] == id:
+            users['Turmas'].pop(pos)
+            return jsonify({'mensagem': f'Turma {turma["descricao"]} deletada com sucesso'}), 200
+    return jsonify({'mensagem': 'ID de turma não encontrado/inexistente, falha ao deletar'}), 404
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 @app.route('/alunos/', methods=['GET'])
