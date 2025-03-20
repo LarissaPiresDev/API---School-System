@@ -161,8 +161,8 @@ def detletar_professor(id):
     return jsonify({'mensagem': 'id de professor não encontrado, falha ao deletar'}), 404
 
 
-
 # ---------------------------------------------TURMAS------------------------------------------------ #
+
 
 @app.route('/turmas/', methods=['GET'])
 @app.route('/turmas', methods=['GET'])
@@ -242,6 +242,55 @@ def criar_turma():
     users['Turmas'].append(nova_turma)
 
     return jsonify(nova_turma), 201
+
+@app.route('/turmas/<id>', methods=['PUT'])
+def atualizar_turma(id):
+
+    
+    turma_atualizada = request.json
+
+    chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
+    chaves_inseridas = set(turma_atualizada.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+
+    if 'professor_id' in turma_atualizada:
+        try:
+            professor_id = int(turma_atualizada['professor_id'])
+        except ValueError:
+            return jsonify({'valor de professor_id precisa ser um número inteiro'}), 404
+        
+        if professor_id <= 0:
+            return jsonify({'mensagem': 'A chave professor_precisa ser maior que 0'}), 400
+
+    if 'ativo' in turma_atualizada:
+        try:
+            ativo = bool(turma_atualizada['ativo']) 
+        except ValueError:
+            return jsonify({'mensagem': 'A chave ativo precisa ser do tipo bool'}), 400
+        
+    if 'descricao' in turma_atualizada:
+        if not isinstance(turma['descricao'], str):
+            return jsonify({'mensagem': 'A chave descricao precisa ser do tipo string'}), 400
+        
+
+    turmas = users['Turmas']
+    for index, turma in enumerate(turmas):
+        if turma['id'] == id:
+            turma_atualizada['id'] = turma['id']
+            users['Turmas'][index] = turma_atualizada
+            return jsonify({'mensagem': f'Turma {turma["nome"]} atualizado com sucesso'}), 200
+    return jsonify({'mensagem': 'id não encontrado'}), 404
+        
+    
+        
+    
+
+        
 
 @app.route('/turmas/<id>', methods=['DELETE'])
 def deletar_turma(id):
