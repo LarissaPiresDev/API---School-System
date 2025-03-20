@@ -142,6 +142,24 @@ def atualizar_professor(id):
     return jsonify({'mensagem': 'id não encontrado'}), 404
             
 
+@app.route('/professores/<id>', methods=['DELETE'])
+def detletar_professor(id):
+
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro para que eu possa deletar'}), 404
+    
+    if id <= 0:
+        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO para que eu possa deletar'}), 404
+    
+
+    for pos, professor in enumerate(users['Professores']):
+        if professor['id'] == id:
+            users['Professores'].pop(pos)
+            return jsonify({'mensagem': f'Professor {professor["nome"]} deletado com sucesso'}), 200
+    return jsonify({'mensagem': 'id de professor não encontrado, falha ao deletar'}), 404
+
 
 
 # ---------------------------------------------TURMAS------------------------------------------------ #
