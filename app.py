@@ -81,10 +81,10 @@ def atualizar_professor(id):
     try:
         id = int(id)
     except ValueError:
-        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}), 404
+        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}), 400
     
     if id <= 0:
-        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}), 404
+        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}), 400
     
     prof_atualizado = request.json
     
@@ -148,10 +148,10 @@ def detletar_professor(id):
     try:
         id = int(id)
     except ValueError:
-        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro para que eu possa deletar'}), 404
+        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro para que eu possa deletar'}), 400
     
     if id <= 0:
-        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO para que eu possa deletar'}), 404
+        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO para que eu possa deletar'}), 400
     
 
     for pos, professor in enumerate(users['Professores']):
@@ -191,6 +191,7 @@ def turmaPorId(id):
 def criar_turma():
     nova_turma = request.json
 
+
     chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
     chaves_inseridas = set(nova_turma.keys())
     chaves_invalidas = chaves_inseridas - chaves_esperadas
@@ -224,7 +225,7 @@ def criar_turma():
             prof_existe = True
             break
     if not prof_existe:
-        return jsonify({'mensagem':'O valor informado na chave professor_id é inexistente, coloque um id existente'}), 400
+        return jsonify({'mensagem':'Id de Professor não encontrado'}), 404
     
     for turma in users['Turmas']:
         if turma['descricao'].lower() == nova_turma['descricao'].lower():
@@ -262,7 +263,7 @@ def atualizar_turma(id):
         try:
             professor_id = int(turma_atualizada['professor_id'])
         except ValueError:
-            return jsonify({'valor de professor_id precisa ser um número inteiro'}), 404
+            return jsonify({'valor de professor_id precisa ser um número inteiro'}), 400
         
         if professor_id <= 0:
             return jsonify({'mensagem': 'A chave professor_precisa ser maior que 0'}), 400
@@ -283,7 +284,7 @@ def atualizar_turma(id):
         if turma['id'] == id:
             turma_atualizada['id'] = turma['id']
             users['Turmas'][index] = turma_atualizada
-            return jsonify({'mensagem': f'Turma {turma["nome"]} atualizado com sucesso'}), 200
+            return jsonify({'mensagem': f'Turma {turma["nome"]} atualizado com sucesso'}), 200  
     return jsonify({'mensagem': 'id não encontrado'}), 404
         
     
@@ -362,7 +363,7 @@ def criar_aluno():
             turma_existe = True
             break
     if not turma_existe:
-        return jsonify({'mensagem': 'Chave turma_id Inválida ou não essa turma não existe'}), 400
+        return jsonify({'mensagem': 'Id de turma não encontrada'}), 404
     
     if not (isinstance(novo_aluno['nome'], str)):
         return jsonify({'mensagem': 'Chave nome precisa ser do tipo string'}), 400

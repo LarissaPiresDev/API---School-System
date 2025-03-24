@@ -21,22 +21,18 @@ class TestStringMethods(unittest.TestCase):
 
     def test_002_id_de_professor_não_int(self):
         resposta = requests.get('http://localhost:5003/professores/1.5')
-        
-        if resposta.status_code == 400:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'ID inserido para professor precisa ser um numero inteiro'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID inserido para professor precisa ser um numero inteiro'}, resposta.json())
     
     def test_003_id_de_professor_menor_igual_que_zero(self):
         resposta = requests.get('http://localhost:5003/professores/-1')
-        if resposta.status_code == 400:
-            resp_retornada = resposta.json()                
-            self.assertEqual({'mensagem': 'ID do professor nao pode ser menor ou igual a que zero'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID do professor nao pode ser menor ou igual a que zero'}, resposta.json())
 
     def test_004_id_de_professor_inexistente(self):
-        resposta = requests.get('http://localhost:5003/professores/500')
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()                
-            self.assertEqual({'mensagem': 'Professor(a) nao encontrado(a)/inexistente'}, resp_retornada)
+        resposta = requests.get('http://localhost:5003/professores/500')       
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Professor(a) nao encontrado(a)/inexistente'}, resposta.json())
 
     def test_005_se_nome_materia_foram_inseridos(self):
         novo_professor = {
@@ -47,9 +43,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if not novo_professor['nome'] or not novo_professor['materia']:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Para criar um novo professor preciso que voce me passe os parâmetros nome e materia'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Para criar um novo professor preciso que voce me passe os parâmetros nome e materia'}, resposta.json())
 
     def test_006_se_idade_nao_for_inserida(self):
         novo_professor = {
@@ -59,9 +54,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if 'id' not in novo_professor:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Idade e obrigatoria, por favor insira-a'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Idade e obrigatoria, por favor insira-a'}, resposta.json())
     
     def test_007_se_nome_e_materia_de_professor_nao_forem_strings(self):
         novo_professor = {
@@ -71,9 +65,8 @@ class TestStringMethods(unittest.TestCase):
             "salario": 1500.00
         }
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if not isinstance(novo_professor["nome"], str) or not isinstance(novo_professor["materia"], str):
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Os parametros nome e/ou materia precisam ser do tipo STRING'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Os parametros nome e/ou materia precisam ser do tipo STRING'}, resposta.json())
     
     def test_008_se_idade_nao_for_um_numero_inteiro(self):
         novo_professor = {
@@ -84,9 +77,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if not isinstance(novo_professor['idade'], int):
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Idade precisa ser um número INTEIRO'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Idade precisa ser um número INTEIRO'}, resposta.json())
 
     def test_009_se_salario_nao_for_float_ou_int(self):
         novo_professor = {
@@ -97,9 +89,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if not isinstance(novo_professor['salario'], (float, int)):
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem':'O parametro de salário precisa ser um número do tipo float ou int'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem':'O parametro de salário precisa ser um número do tipo float ou int'}, resposta.json())
 
     def test_010_se_idade_menor_que_18(self):
         novo_professor = {
@@ -109,9 +100,8 @@ class TestStringMethods(unittest.TestCase):
             "salario": 1500.00
         }
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if novo_professor['idade'] >= 0 and novo_professor['idade'] < 18:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Um professor precisa ter no minimo 18 anos'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Um professor precisa ter no minimo 18 anos'}, resposta.json())
     
     def test_011_se_idade_for_muito_alta(self):
         novo_professor = {
@@ -121,9 +111,8 @@ class TestStringMethods(unittest.TestCase):
             "salario": 1500.00
         }
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if novo_professor['idade'] > 18 and novo_professor['idade'] >= 120:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Esse professor não tem condiçoes de dar aula, idade muito alta'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Esse professor não tem condiçoes de dar aula, idade muito alta'}, resposta.json())
 
     def test_012_se_idade_e_negativa(self):
         novo_professor = {
@@ -133,9 +122,8 @@ class TestStringMethods(unittest.TestCase):
             "salario": -180.90
         }
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if novo_professor['idade'] < 0:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Idade não pode ser negativa!!'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Idade não pode ser negativa!!'}, resposta.json())
 
     def test_013_se_salario_for_negativo_ou_menor_que_1400(self):
         novo_professor = {
@@ -146,9 +134,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        if novo_professor['salario'] <= 1400.00:
-            resp_retornada = resposta.json()
-            self.assertEqual ({'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual ({'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'}, resposta.json())
 
     def test_014_se_tem_chaves_invalidas(self):
         novo_professor = {
@@ -159,23 +146,18 @@ class TestStringMethods(unittest.TestCase):
             "telefone": "4002-8922"
         }
         resposta = requests.post('http://localhost:5003/professores', json=novo_professor)
-        resp_retornada = resposta.json()
-        self.assertIn('chaves_invalidas', resp_retornada)
-        self.assertEqual(set(resp_retornada['chaves_invalidas']), {'endereco', 'telefone'})
+        self.assertIn('chaves_invalidas', resposta.json())
+        self.assertEqual(set(resposta.json()['chaves_invalidas']), {'endereco', 'telefone'})
 
     def test_015_se_id_nao_for_int_no_put(self):
         resposta = requests.put('http://localhost:5003/professores/1.5')
-        
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}, resposta.json())
     
     def test_016_se_id_de_professor_no_put_menor_igual_que_zero(self):
         resposta = requests.put('http://localhost:5003/professores/-1')
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()
-
-            self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}, resposta.json())
 
     def test_017_se_tem_chaves_invalidas_no_put(self):
         prof_atualizado = {
@@ -186,9 +168,9 @@ class TestStringMethods(unittest.TestCase):
             "telefone": "4002-8922"
         }
         resposta = requests.put('http://localhost:5003/professores/5', json=prof_atualizado)
-        resp_retornada = resposta.json()
-        self.assertIn('chaves_invalidas', resp_retornada)
-        self.assertEqual(set(resp_retornada['chaves_invalidas']), {'endereco', 'telefone'})
+        self.assertIn('chaves_invalidas', resposta.json())
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual(set(resposta.json()['chaves_invalidas']), {'endereco', 'telefone'})
 
     def test_018_se_no_put_nome_e_string_ou_esta_vazio(self):
 
@@ -198,8 +180,8 @@ class TestStringMethods(unittest.TestCase):
             "materia": "Artes e Flisofia",
         }
         resposta = requests.put('http://localhost:5003/professores/5', json=novo_professor)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Para realizar atualização de professor valor para a chave nome precisa ser do tipo STRING e não pode estar vazia'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Para realizar atualização de professor valor para a chave nome precisa ser do tipo STRING e não pode estar vazia'}, resposta.json())
 
     
     def test_019_idade_nao_inteiro_no_put(self):
@@ -211,8 +193,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.put('http://localhost:5003/professores/1', json=professor_atualizado)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Essa nova idade para professor está inválida, idade tem que ser obrigatóriamente do tipo INTEIRO'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Essa nova idade para professor está inválida, idade tem que ser obrigatóriamente do tipo INTEIRO'}, resposta.json())
 
     
     def test_020_idade_maior_que_120_no_put(self):
@@ -224,8 +206,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.put('http://localhost:5003/professores/1', json=professor_atualizado)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Essa nova idade está muito avançada para dar aulas, talvez nem esteja vivo'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Essa nova idade está muito avançada para dar aulas, talvez nem esteja vivo'}, resposta.json())
 
     def test_021_idade_menor_que_18_no_put(self):
         professor_atualizado = {
@@ -236,8 +218,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.put('http://localhost:5003/professores/1', json=professor_atualizado)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Idade professor não pode ser negativa ou menor que 18 anos'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Idade professor não pode ser negativa ou menor que 18 anos'}, resposta.json())
 
     def test_022_se_materia_nao_for_string_no_put(self):
         prof_atualizado = {
@@ -248,8 +230,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.put('http://localhost:5003/professores/1', json=prof_atualizado)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'O valor inserido em chave matéria precisa ser do tipo String e não pode estar vazia'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor inserido em chave matéria precisa ser do tipo String e não pode estar vazia'}, resposta.json())
 
     def test_023_se_salario_nao_for_float_ou_int_no_put(self):
         prof_atualizado = {
@@ -260,8 +242,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.put('http://localhost:5003/professores/1', json=prof_atualizado)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'O valor da chave salário precisa ser do um número com ponto flutuante (FLOAT, ex: 1400.0), ou int(1400) para que possa existir a converção'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor da chave salário precisa ser do um número com ponto flutuante (FLOAT, ex: 1400.0), ou int(1400) para que possa existir a converção'}, resposta.json())
 
     def test_024_se_salario_for_menor_que_1400_no_put(self):
         prof_atualizado = {
@@ -272,29 +254,24 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.put('http://localhost:5003/professores/1', json=prof_atualizado)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}, resposta.json())
 
     def test_025_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/professores/1.5')
-        
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro para que eu possa deletar'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro para que eu possa deletar'}, resposta.json())
 
     def test_026_id_invalido_menor_igual_zero_delete(self):
         resposta = requests.delete('http://localhost:5003/professores/0')
-        
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO para que eu possa deletar'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO para que eu possa deletar'}, resposta.json())
     
     def test_027_id_nao_encontrado_falha_ao_deletar(self):
         resposta = requests.delete('http://localhost:5003/professores/9999')
         
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'id de professor não encontrado, falha ao deletar'}, resp_retornada)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'id de professor não encontrado, falha ao deletar'}, resposta.json())
 
 
          
@@ -317,22 +294,20 @@ class TestStringMethods(unittest.TestCase):
 
     def test_029_id_de_turma_não_int(self):
         resposta = requests.get('http://localhost:5003/turmas/1.5')
-        if resposta.status_code == 400:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'ID inserido para turma precisa ser um numero inteiro'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID inserido para turma precisa ser um numero inteiro'}, resposta.json())
 
     def test_030_id_de_turma_menor_igual_que_zero(self):
         resposta = requests.get('http://localhost:5003/turmas/-1')
-        if resposta.status_code == 400:
-            resp_retornada = resposta.json()                
-            self.assertEqual({'mensagem': 'ID de turma nao pode ser menor ou igual a que zero'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de turma nao pode ser menor ou igual a que zero'}, resposta.json())
 
 
     def test_031_id_de_turma_inexistente(self):
         resposta = requests.get('http://localhost:5003/turmas/500')
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Turma nao encontrada/inexistente'}, resp_retornada)
+
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Turma nao encontrada/inexistente'}, resposta.json())
     
     def test_032_se_em_turma_as_chaves_professor_id_e_descricao_nao_forem_informados(self):
         nova_turma = {
@@ -341,8 +316,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Para criar uma nova turma, é obrigatório inserir a chave id_professor e descricao'}, resposta.json())
     
     def test_033_se_a_chave_descricao_nao_for_string_ou_esta_vazia(self):
         nova_turma = {
@@ -352,8 +327,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'decricao precisa ser uma STRING e/ou não pode estar vazia'}, resp_retornada)
+        
+        self.assertEqual({'mensagem': 'decricao precisa ser uma STRING e/ou não pode estar vazia'}, resposta.json())
     
     def test_034_verifica_se_chave_ativa_foi_informada_e_se_seu_tipo_e_boolean(self):
         nova_turma = {
@@ -362,8 +337,8 @@ class TestStringMethods(unittest.TestCase):
             "professor_id": 4
         }
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'a chave ativo, precisa ser de valor booleano (true ou false)'}, resposta.json())
 
     def test_035_caso_descricao_inserida_em_turma_ja_esteja_em_nosso_banco_de_dados(self):
         nova_turma = {
@@ -372,8 +347,9 @@ class TestStringMethods(unittest.TestCase):
             "professor_id": 4
         }
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
-        resp_retornada = resposta.json()
-        self.assertEqual( {'mensagem': f'A turma com a descricao {nova_turma["descricao"].title()} ja existe'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual( {'mensagem': f'A turma com a descricao {nova_turma["descricao"].title()} ja existe'}, resposta.json())
+        
     def test_036_caso_professor_id_inserido_ja_esteje_responsavel_por_alguma_turma(self):
 
         nova_turma = {
@@ -382,8 +358,8 @@ class TestStringMethods(unittest.TestCase):
             "professor_id": 2
         }
         resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'}, resposta.json())
     
 
 
@@ -394,9 +370,10 @@ class TestStringMethods(unittest.TestCase):
             "professor_id": "oito"
         }
                 
-        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
-        resp_retornada = resposta.json() 
-        self.assertEqual({'mensagem': 'A chave professor_id precisa ser um número INTEIRO'}, resp_retornada)
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma) 
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'A chave professor_id precisa ser um número INTEIRO'}, resposta.json())
+        
     def test_038_se_professor_id_for_menor_igual_a_zero(self):
         nova_turma = {
             "descricao": "7 ano D",
@@ -404,9 +381,9 @@ class TestStringMethods(unittest.TestCase):
             "professor_id": -1
         }
 
-        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
-        resp_retornada = resposta.json() 
-        self.assertEqual({'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'}, resp_retornada)
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma) 
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'}, resposta.json())
 
     def test_039_caso_tenha_chaves_invalidas(self):
         turma_atualizada = {
@@ -417,9 +394,9 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/turmas', json=turma_atualizada)
-        resp_retornada = resposta.json()
-        self.assertIn('chaves_invalidas', resp_retornada)
-        self.assertEqual(set(resp_retornada['chaves_invalidas']), {'melhor_nota'})
+        self.assertEqual(400, resposta.status_code)
+        self.assertIn('chaves_invalidas', resposta.json())
+        self.assertEqual(set(resposta.json()['chaves_invalidas']), {'melhor_nota'})
 
     def test_042_chaves_invalidas_no_update(self):
         turma_atualizada = {
@@ -429,34 +406,24 @@ class TestStringMethods(unittest.TestCase):
             "nota_maxima": 10
         }
         resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
-        resp_retornada = resposta.json()
-        self.assertEqual('Chaves adicionais não necessárias, retire-as', resp_retornada['mensagem'])
-        self.assertIn('nota_maxima', resp_retornada['chaves_invalidas'])
-
-    def test_043_professor_id_menor_igual_zero_no_update(self):
-        turma_atualizada = {
-            "descricao": "7 ano D",
-            "ativo": True,
-            "professor_id": -1
-        }
-        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'A chave professor_precisa ser maior que 0'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual('Chaves adicionais não necessárias, retire-as', resposta.json()['mensagem'])
+        self.assertIn('nota_maxima', resposta.json()['chaves_invalidas'])
     
     def test_044_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/turmas/1.5')
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser um número inteiro para que a turma possa ser deletada.'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser um número inteiro para que a turma possa ser deletada.'}, resposta.json())
 
     def test_045_id_invalido_menor_igual_zero_delete(self):
         resposta = requests.delete('http://localhost:5003/turmas/0')
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser maior que zero para que a turma possa ser deletada.'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser maior que zero para que a turma possa ser deletada.'}, resposta.json())
     
     def test_046_id_nao_encontrado_falha_ao_deletar(self):
         resposta = requests.delete('http://localhost:5003/turmas/9999')
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'ID de turma não encontrado/inexistente, falha ao deletar'}, resp_retornada)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de turma não encontrado/inexistente, falha ao deletar'}, resposta.json())
 
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
@@ -477,22 +444,20 @@ class TestStringMethods(unittest.TestCase):
 
     def test_048_id_de_aluno_não_int(self):
         resposta = requests.get('http://localhost:5003/alunos/1.5')
-        if resposta.status_code == 400:
-            resp_retornada = resposta.json()
-            self.assertEqual ({'mensagem': 'ID inserido para aluno tem que ser um numero inteiro'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual ({'mensagem': 'ID inserido para aluno tem que ser um numero inteiro'}, resposta.json())
 
     def test_049_id_de_aluno_menor_igual_que_zero(self):
         resposta = requests.get('http://localhost:5003/alunos/-1')
-        if resposta.status_code == 400:
-            resp_retornada = resposta.json()  
-            self.assertEqual({'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'}, resposta.json())
 
 
     def test_050_id_de_aluno_inexistente(self):
         resposta = requests.get('http://localhost:5003/alunos/500')
-        if resposta.status_code == 404:
-            resp_retornada = resposta.json()
-            self.assertEqual({'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'}, resp_retornada)
+
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'}, resposta.json())
 
 
     def test_051_se_nome_e_turma_id_nao_forem_inseridos(self):
@@ -503,8 +468,7 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}, resp_retornada)
+        self.assertEqual({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}, resposta.json())
 
     def test_052_se_turma_id_for_menor_que_zero(self):
         novo_aluno = {
@@ -513,8 +477,8 @@ class TestStringMethods(unittest.TestCase):
             "turma_id": -1,
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'}, resposta.json())
     
     def test_053_se_turma_id_não_existe(self):
         novo_aluno = {
@@ -523,8 +487,8 @@ class TestStringMethods(unittest.TestCase):
             "turma_id": 10,
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Chave turma_id Inválida ou não essa turma não existe'}, resp_retornada)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Id de turma não encontrada'}, resposta.json())
 
     def test_054_se_nome_nao_for_string(self):
         novo_aluno = {
@@ -535,8 +499,8 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Chave nome precisa ser do tipo string'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Chave nome precisa ser do tipo string'}, resposta.json())
 
 
     def test_055_se_turma_id_ou_idade_nao_forem_inteiros(self):
@@ -546,8 +510,8 @@ class TestStringMethods(unittest.TestCase):
             "turma_id": 11
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}, resposta.json())
 
     def test_056_se_idade_for_menor_igual_que_zero(self):
         novo_aluno = {
@@ -556,8 +520,8 @@ class TestStringMethods(unittest.TestCase):
             "turma_id": 11
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resposta.json())
 
     def test_057_se_data_nascimento_nao_for_string(self):
         novo_aluno = {
@@ -567,8 +531,8 @@ class TestStringMethods(unittest.TestCase):
             "data_nascimento": 2
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}, resposta.json())
 
 
     def test_058_se_as_notas_do_semestre_um_ou_2_junto_da_media_nao_forem_inteiros_ou_float(self):
@@ -582,9 +546,9 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        print(resp_retornada)
-        self.assertEqual({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}, resp_retornada)
+        print(resposta.json())
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}, resposta.json())
 
     
     def test_059_se_notas_ou_media_inserida_forem_negativas(self):
@@ -597,9 +561,9 @@ class TestStringMethods(unittest.TestCase):
             "media_final": 0
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        print(resp_retornada)
-        self.assertEqual({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}, resp_retornada)
+        print(resposta.json())
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}, resposta.json())
 
 
     def test_060_se_tem_chaves_invalidas(self):
@@ -616,22 +580,22 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
-        resp_retornada = resposta.json()
-        self.assertIn('chaves_invalidas', resp_retornada)
-        self.assertEqual(set(resp_retornada['chaves_invalidas']), {'nome_do_responsavel', 'endereço'})
+        self.assertIn('chaves_invalidas', resposta.json())
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual(set(resposta.json()['chaves_invalidas']), {'nome_do_responsavel', 'endereço'})
 
 
     def test_061_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/1.5')
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
 
     def test_062_id_invalido_menor_igual_zero_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/0')
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resp_retornada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
     
     def test_063_id_nao_encontrado_falha_ao_deletar(self):
         resposta = requests.delete('http://localhost:5003/alunos/9999')
-        resp_retornada = resposta.json()
-        self.assertEqual({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}, resp_retornada)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}, resposta.json())
