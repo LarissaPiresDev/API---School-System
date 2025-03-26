@@ -245,9 +245,23 @@ def criar_turma():
     return jsonify(nova_turma), 201
 
 @app.route('/turmas/<id>', methods=['PUT'])
-def atualizar_turma(id):
-
+def atualizar_turma(id):    
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID de turma informado no end point precisa ser um número inteiro'}), 400
     
+    if id <= 0:
+        return jsonify({'mensagem': 'ID de turma precisa ser maior que zero'}), 400
+    
+    turma_existe = False
+    for turma in users['Turmas']:
+        if id == turma['id']:
+            turma_existe = True
+            break
+        if not turma_existe:
+            return jsonify({'mensagem': 'Erro, ID de turma não encontrado'}), 404
+
     turma_atualizada = request.json
 
     chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
@@ -258,34 +272,7 @@ def atualizar_turma(id):
             'mensagem': 'Chaves adicionais não necessárias, retire-as',
             'chaves_invalidas': list(chaves_invalidas)
         }), 400
-
-    if 'professor_id' in turma_atualizada:
-        try:
-            professor_id = int(turma_atualizada['professor_id'])
-        except ValueError:
-            return jsonify({'valor de professor_id precisa ser um número inteiro'}), 400
-        
-        if professor_id <= 0:
-            return jsonify({'mensagem': 'A chave professor_precisa ser maior que 0'}), 400
-
-    if 'ativo' in turma_atualizada:
-        try:
-            ativo = bool(turma_atualizada['ativo']) 
-        except ValueError:
-            return jsonify({'mensagem': 'A chave ativo precisa ser do tipo bool'}), 400
-        
-    if 'descricao' in turma_atualizada:
-        if not isinstance(turma['descricao'], str):
-            return jsonify({'mensagem': 'A chave descricao precisa ser do tipo string'}), 400
-        
-
-    turmas = users['Turmas']
-    for index, turma in enumerate(turmas):
-        if turma['id'] == id:
-            turma_atualizada['id'] = turma['id']
-            users['Turmas'][index] = turma_atualizada
-            return jsonify({'mensagem': f'Turma {turma["nome"]} atualizado com sucesso'}), 200  
-    return jsonify({'mensagem': 'id não encontrado'}), 404
+    
         
     
         
