@@ -386,17 +386,53 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'chave professor_id Inválida!!!! O valor inserido nessa chave não pode ser menor ou igual a zero'}, resposta.json())
 
     def test_039_caso_tenha_chaves_invalidas(self):
-        turma_atualizada = {
+        nova_turma = {
             "descricao": "7 ano D",
             "ativo": True,
             "professor_id": 4,
             "melhor_nota": 10
         }
 
-        resposta = requests.post('http://localhost:5003/turmas', json=turma_atualizada)
+        resposta = requests.post('http://localhost:5003/turmas', json=nova_turma)
         self.assertEqual(400, resposta.status_code)
         self.assertIn('chaves_invalidas', resposta.json())
         self.assertEqual(set(resposta.json()['chaves_invalidas']), {'melhor_nota'})
+
+    # PUT
+
+    def test_040_se_caso_id_de_turma_nao_for_inteiro(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": 4
+        }
+        resposta = requests.put('http://localhost:5003/turmas/abc', json=turma_atualizada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de turma informado no end point precisa ser um número inteiro'}, resposta.json())
+
+    def test_040_csdo_id_de_turma_for_menor_igual_a_zero(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": 4
+        }
+        resposta = requests.put('http://localhost:5003/turmas/-11', json=turma_atualizada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'ID de turma precisa ser maior que zero'}, resposta.json())
+
+    def test_041_se_caso_id_de_turma_nao_encontrado(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": 4
+        }
+
+        resposta = requests.put('http://localhost:5003/turmas/777777', json=turma_atualizada)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Erro, ID de turma não encontrado'}, resposta.json())
+
+
+
 
     def test_042_chaves_invalidas_no_update(self):
         turma_atualizada = {
