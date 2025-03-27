@@ -431,6 +431,17 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Erro, ID de turma não encontrado'}, resposta.json())
 
+    def test_042_se_descricao_de_turma_nao_for_string(self):
+        turma_atualizada = { 
+            "descricao": 123456,
+            "ativo": True,
+            "professor_id": 4
+        }
+
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}, resposta.json())
+
 
 
 
