@@ -493,7 +493,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'O valor para a chave ativo precisa ser do tipo boolean'}, resposta.json())
 
 
-    def test_042_chaves_invalidas_no_update(self):
+    def test_048_chaves_invalidas_no_update(self):
         turma_atualizada = {
             "descricao": "7 ano E",
             "ativo": True,
@@ -504,6 +504,18 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual('Chaves adicionais não necessárias, retire-as', resposta.json()['mensagem'])
         self.assertIn('nota_maxima', resposta.json()['chaves_invalidas'])
+
+    def test_049_caso_de_certo_o_put_de_turma(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": 4 
+        }
+
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(200, resposta.status_code)
+        self.assertEqual({'mensagem': 'Turma atualizada com sucesso'}, resposta.json())
+
     
     def test_044_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/turmas/1.5')
