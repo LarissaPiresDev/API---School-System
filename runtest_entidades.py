@@ -442,6 +442,45 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}, resposta.json())
 
+    def test_043_caso_professor_id_nao_for_inteiro(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": "quatro"
+        }
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'A chave professor_id precisa ser um número inteiro'}, resposta.json())
+
+    def test_044_caso_professor_id_for_menor_que_zero(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": -1
+        }
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'A chave professor_id precisa ser maior que zero'}, resposta.json())
+    
+    def test_045_caso_professor_id_ja_esteja_em_uma_sala(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": 1
+        }
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'Erro!!! Cada professor já está sendo responsável por uma sala, e não pode ser responsável por duas, por favor, coloque um professor livre para cuidar dessa sala'}, resposta.json())
+    
+    def test_046_caso_professor_id_nao_encontrado(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": 7777777
+        }
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Professor Id não encontrado, tente novamente '}, resposta.json())
 
 
 
