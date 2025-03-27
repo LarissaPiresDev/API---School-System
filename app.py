@@ -282,13 +282,17 @@ def atualizar_turma(id):
         if turma['professor_id'] == turma_atualizada['professor_id']:
             return jsonify({'mensagem': 'Erro!!! Cada professor já está sendo responsável por uma sala, e não pode ser responsável por duas, por favor, coloque um professor livre para cuidar dessa sala'}), 400
 
-    prof_existe = False
-    for professor in users['Professores']:
-        if professor['id'] == turma_atualizada['professor_id']:
-            prof_existe = True
-            break
-    if not prof_existe:
-        return jsonify({'mensagem': 'Professor Id não encontrado, tente novamente '}), 404
+        prof_existe = False
+        for professor in users['Professores']:
+            if professor['id'] == turma_atualizada['professor_id']:
+                prof_existe = True
+                break
+        if not prof_existe:
+            return jsonify({'mensagem': 'Professor Id não encontrado, tente novamente '}), 404
+    
+    if 'ativo' in turma_atualizada:
+        if not isinstance(turma_atualizada['ativo'], bool):
+            return jsonify({'mensagem': 'O valor para a chave ativo precisa ser do tipo boolean'}), 400
         
 
     chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
