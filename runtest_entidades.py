@@ -482,6 +482,15 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Professor Id não encontrado, tente novamente '}, resposta.json())
 
+    def test_047_caso_ativo_esteje_e_nao_for_boolean(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": "Ativada",
+            "professor_id": 4 
+        }
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor para a chave ativo precisa ser do tipo boolean'}, resposta.json())
 
 
     def test_042_chaves_invalidas_no_update(self):
