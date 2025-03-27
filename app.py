@@ -261,8 +261,12 @@ def atualizar_turma(id):
             break
         if not turma_existe:
             return jsonify({'mensagem': 'Erro, ID de turma não encontrado'}), 404
-
+        
     turma_atualizada = request.json
+
+    if 'descricao' in turma_atualizada:
+        if not isinstance(turma_atualizada['descricao'], str):
+            return jsonify({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}), 400
 
     chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
     chaves_inseridas = set(turma_atualizada.keys())
