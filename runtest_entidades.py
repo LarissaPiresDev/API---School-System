@@ -815,7 +815,37 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'A chave data_nascimento precisa ser uma string e não pode estar vazia!!'}, resposta.json())
+        
+    def test_075_caso_idade_de_aluno_nao_for_um_numero_inteiro(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": "doze", 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
 
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor informado para a chave idade precisa ser um número inteiro INTEIRO'}, resposta.json())
+        
+        
+    def test_076_caso_idade_de_aluno_nao_for_um_numero_maior_que_zero(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": -12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resposta.json())
 
 
     def test_071_id_invalido_nao_inteiro_no_delete(self):
