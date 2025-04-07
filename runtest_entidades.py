@@ -800,6 +800,21 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Id de turma não encontrado'}, resposta.json())
+        
+    def test_074_caso_data_de_nascimento_nao_for_string_ou_esteje_vazia(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'A chave data_nascimento precisa ser uma string e não pode estar vazia!!'}, resposta.json())
 
 
 
