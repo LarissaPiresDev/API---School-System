@@ -784,6 +784,22 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'A chave turma_id precisa ser maior que zero'}, resposta.json())
+        
+    def test_074_caso_id_de_turma_nao_for_encontrada(self):
+        
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 7777777, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Id de turma não encontrado'}, resposta.json())
 
 
 
