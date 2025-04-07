@@ -266,7 +266,7 @@ def atualizar_turma(id):
 
 
     if 'descricao' in turma_atualizada:
-        if not isinstance(turma_atualizada['descricao'], str):
+        if not isinstance(turma_atualizada['descricao'], str) or not turma_atualizada['descricao'].strip():
             return jsonify({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}), 400
     
 
