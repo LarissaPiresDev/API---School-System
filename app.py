@@ -448,7 +448,11 @@ def atualizar_alunos(id):
                 turma_existe = True
                 break
         if not turma_existe:
-            return jsonify({'mensagem': 'Id de turma não encontrado'}), 404    
+            return jsonify({'mensagem': 'Id de turma não encontrado'}), 404 
+       
+    if 'data_nascimento' in aluno_atualizado:
+        if not isinstance(aluno_atualizado['data_nascimento'], str) or not aluno_atualizado['data_nascimento'].strip():
+            return jsonify({'mensagem': 'A chave data_nascimento precisa ser uma string e não pode estar vazia!!'}), 400
 
 @app.route('/alunos/<id>', methods=['DELETE'])
 def deletar_aluno(id):
