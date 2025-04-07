@@ -891,6 +891,37 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}, resposta.json())
+        
+        
+    def test_080_caso_nao_encontre_o_id_do_aluno_informado_no_end_point(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
+        
+    def test_081_caso_atualizacao_de_aluno_de_certo(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }         
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(200, resposta.status_code)
+        self.assertEqual({'mensagem': 'Aluno atualizada com sucesso'}, resposta.json())     
+
+        resposta = requests.put('http://localhost:5003/alunos/1005', json=aluno_atualizado)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Erro, Id de aluno não encontrado'}, resposta.json())
 
     def test_071_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/1.5')
