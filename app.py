@@ -462,7 +462,21 @@ def atualizar_alunos(id):
             return jsonify({'mensagem': 'O valor informado para a chave idade precisa ser um número inteiro INTEIRO'}), 400
         
         if aluno_atualizado['idade'] <= 0:
-            return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}),400
+            return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}), 400
+        
+    if 'nota_primeiro_semestre' in aluno_atualizado or 'nota_segundo_semestre' in aluno_atualizado or 'media_final' in aluno_atualizado:
+        try:
+            aluno_atualizado['nota_primeiro_semestre'] = float(aluno_atualizado['nota_primeiro_semestre'])
+            aluno_atualizado['nota_segundo_semestre'] = float(aluno_atualizado['nota_segundo_semestre'])
+            aluno_atualizado['media_final'] = float(aluno_atualizado['media_final'])
+        except ValueError:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam ser do tipo float'}), 400
+
+        if aluno_atualizado['nota_primeiro_semestre'] < 0 or aluno_atualizado['nota_segundo_semestre'] < 0 or aluno_atualizado['media_final'] < 0:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser números negativos'}), 400 
+            
+        if aluno_atualizado['nota_primeiro_semestre'] > 10 or aluno_atualizado['nota_segundo_semestre'] > 10 or aluno_atualizado['media_final'] > 10:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}), 400     
         
 
 @app.route('/alunos/<id>', methods=['DELETE'])
