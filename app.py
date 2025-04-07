@@ -127,11 +127,7 @@ def atualizar_professor(id):
 
         if salario < 1400:
             return jsonify({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}), 400
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 3f2919906aa6d951beac75d57745cb10d332d456
+ 
     professores = users['Professores']
     for index, professor in enumerate(professores):
         if professor['id'] == id:
@@ -304,13 +300,6 @@ def atualizar_turma(id):
             users['Turmas'][index] = turma_atualizada
             return jsonify({'mensagem': 'Turma atualizada com sucesso'}), 200
     return jsonify({'mensagem': 'Erro, ID de turma não encontrado'}), 404
-
-    
-    
-        
-    
-        
-
 
     if 'descricao' in turma_atualizada:
         if not isinstance(turma_atualizada['descricao'], str):

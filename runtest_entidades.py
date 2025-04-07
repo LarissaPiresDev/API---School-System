@@ -922,29 +922,17 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'Aluno atualizada com sucesso'}, resposta.json())     
 
 
-<<<<<<< HEAD
     def test_083_id_invalido_nao_inteiro_no_delete(self):
-=======
-    def test_068_id_invalido_nao_inteiro_no_delete(self):
->>>>>>> 3f2919906aa6d951beac75d57745cb10d332d456
         resposta = requests.delete('http://localhost:5003/alunos/1.5')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
 
-<<<<<<< HEAD
     def test_084_id_invalido_menor_igual_zero_delete(self):
-=======
-    def test_069_id_invalido_menor_igual_zero_delete(self):
->>>>>>> 3f2919906aa6d951beac75d57745cb10d332d456
         resposta = requests.delete('http://localhost:5003/alunos/0')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
     
-<<<<<<< HEAD
     def test_085_id_nao_encontrado_falha_ao_deletar(self):
-=======
-    def test_070_id_nao_encontrado_falha_ao_deletar(self):
->>>>>>> 3f2919906aa6d951beac75d57745cb10d332d456
         resposta = requests.delete('http://localhost:5003/alunos/9999')
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}, resposta.json())
