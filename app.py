@@ -476,7 +476,16 @@ def atualizar_alunos(id):
             return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser números negativos'}), 400 
             
         if aluno_atualizado['nota_primeiro_semestre'] > 10 or aluno_atualizado['nota_segundo_semestre'] > 10 or aluno_atualizado['media_final'] > 10:
-            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}), 400     
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}), 400
+        
+        
+    alunos = users['Alunos']
+    for index, aluno in enumerate(alunos):
+        if aluno['id'] == id:
+            aluno_atualizado['id'] = aluno['id']
+            users['Alunos'][index] = aluno_atualizado
+            return jsonify({'mensagem': 'Aluno atualizada com sucesso'}), 200
+    return jsonify({'mensagem': 'Erro, Id de aluno não encontrado'}), 404
         
 
 @app.route('/alunos/<id>', methods=['DELETE'])
