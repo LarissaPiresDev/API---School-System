@@ -418,6 +418,17 @@ def atualizar_alunos(id):
     
     if id <= 0:
         return jsonify({'mensagem': 'ID de aluno precisa ser maior que zero'}), 400
+    
+    aluno_atualizado = request.json
+
+    chaves_esperadas = {'nome', 'idade', 'turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre', 'media_final'}
+    chaves_inseridas = set(aluno_atualizado.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400    
 
 @app.route('/alunos/<id>', methods=['DELETE'])
 def deletar_aluno(id):
