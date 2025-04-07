@@ -535,7 +535,7 @@ class TestStringMethods(unittest.TestCase):
 
 # -----------------------------------------------ALUNOS---------------------------------------------- #
 
-    def test_047_alunos_retorna_lista(self):
+    def test_054_alunos_retorna_lista(self):
         resposta = requests.get('http://localhost:5003/alunos')
 
         if resposta.status_code == 404:
@@ -549,25 +549,25 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual(type(obj_retornado),type([]))
 
-    def test_048_id_de_aluno_não_int(self):
+    def test_055_id_de_aluno_não_int(self):
         resposta = requests.get('http://localhost:5003/alunos/1.5')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual ({'mensagem': 'ID inserido para aluno tem que ser um numero inteiro'}, resposta.json())
 
-    def test_049_id_de_aluno_menor_igual_que_zero(self):
+    def test_056_id_de_aluno_menor_igual_que_zero(self):
         resposta = requests.get('http://localhost:5003/alunos/-1')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'}, resposta.json())
 
 
-    def test_050_id_de_aluno_inexistente(self):
+    def test_057_id_de_aluno_inexistente(self):
         resposta = requests.get('http://localhost:5003/alunos/500')
 
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'}, resposta.json())
 
 
-    def test_051_se_nome_e_turma_id_nao_forem_inseridos(self):
+    def test_058_se_nome_e_turma_id_nao_forem_inseridos(self):
         novo_aluno = {
             "idade": 13,
             "turma_id": 4,
@@ -577,7 +577,7 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
         self.assertEqual({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}, resposta.json())
 
-    def test_052_se_turma_id_for_menor_que_zero(self):
+    def test_059_se_turma_id_for_menor_que_zero(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -587,7 +587,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'}, resposta.json())
     
-    def test_053_se_turma_id_não_existe(self):
+    def test_060_se_turma_id_não_existe(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -597,7 +597,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Id de turma não encontrada'}, resposta.json())
 
-    def test_054_se_nome_nao_for_string(self):
+    def test_061_se_nome_nao_for_string(self):
         novo_aluno = {
             "nome": 50,
             "idade": 13,
@@ -610,7 +610,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'Chave nome precisa ser do tipo string'}, resposta.json())
 
 
-    def test_055_se_turma_id_ou_idade_nao_forem_inteiros(self):
+    def test_062_se_turma_id_ou_idade_nao_forem_inteiros(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": "treze",
@@ -620,7 +620,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}, resposta.json())
 
-    def test_056_se_idade_for_menor_igual_que_zero(self):
+    def test_063_se_idade_for_menor_igual_que_zero(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": -1,
@@ -630,7 +630,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resposta.json())
 
-    def test_057_se_data_nascimento_nao_for_string(self):
+    def test_064_se_data_nascimento_nao_for_string(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -642,7 +642,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}, resposta.json())
 
 
-    def test_058_se_as_notas_do_semestre_um_ou_2_junto_da_media_nao_forem_inteiros_ou_float(self):
+    def test_065_se_as_notas_do_semestre_um_ou_2_junto_da_media_nao_forem_inteiros_ou_float(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -658,7 +658,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}, resposta.json())
 
     
-    def test_059_se_notas_ou_media_inserida_forem_negativas(self):
+    def test_066_se_notas_ou_media_inserida_forem_negativas(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -673,7 +673,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}, resposta.json())
 
 
-    def test_060_se_tem_chaves_invalidas(self):
+    def test_067_se_tem_chaves_invalidas(self):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
@@ -692,17 +692,17 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(set(resposta.json()['chaves_invalidas']), {'nome_do_responsavel', 'endereço'})
 
 
-    def test_061_id_invalido_nao_inteiro_no_delete(self):
+    def test_068_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/1.5')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
 
-    def test_062_id_invalido_menor_igual_zero_delete(self):
+    def test_069_id_invalido_menor_igual_zero_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/0')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
     
-    def test_063_id_nao_encontrado_falha_ao_deletar(self):
+    def test_070_id_nao_encontrado_falha_ao_deletar(self):
         resposta = requests.delete('http://localhost:5003/alunos/9999')
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}, resposta.json())
