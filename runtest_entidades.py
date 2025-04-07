@@ -847,6 +847,50 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resposta.json())
 
+    def test_077_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_nao_forem_do_tipo_float(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": "nove e meio", 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }     
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam ser do tipo float'}, resposta.json())
+
+    def test_078_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_forem_menor_que_zero(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": -9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }     
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser números negativos'}, resposta.json())
+        
+    def test_079_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_forem_maiores_que_zero(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 11, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }     
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}, resposta.json())
 
     def test_071_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/1.5')
