@@ -468,7 +468,7 @@ class TestStringMethods(unittest.TestCase):
             "ativo": True,
             "professor_id": 1
         }
-        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        resposta = requests.put('http://localhost:5003/turmas/12', json=turma_atualizada)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'Erro!!! Cada professor já está sendo responsável por uma sala, e não pode ser responsável por duas, por favor, coloque um professor livre para cuidar dessa sala'}, resposta.json())
     

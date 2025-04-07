@@ -279,7 +279,7 @@ def atualizar_turma(id):
             return jsonify({'mensagem': 'A chave professor_id precisa ser maior que zero'}), 400
         
     for turma in users['Turmas']:
-        if turma['professor_id'] == turma_atualizada['professor_id']:
+        if turma['professor_id'] == turma_atualizada['professor_id'] and id != turma['id']:
             return jsonify({'mensagem': 'Erro!!! Cada professor já está sendo responsável por uma sala, e não pode ser responsável por duas, por favor, coloque um professor livre para cuidar dessa sala'}), 400
 
         prof_existe = False
@@ -303,13 +303,6 @@ def atualizar_turma(id):
             'mensagem': 'Chaves adicionais não necessárias, retire-as',
             'chaves_invalidas': list(chaves_invalidas)
         }), 400
-    
-        
-    
-        
-    
-
-        
 
 @app.route('/turmas/<id>', methods=['DELETE'])
 def deletar_turma(id):
