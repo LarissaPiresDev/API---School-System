@@ -653,6 +653,7 @@ class TestStringMethods(unittest.TestCase):
         }
 
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        print(resposta.json())
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}, resposta.json())
 
@@ -667,6 +668,7 @@ class TestStringMethods(unittest.TestCase):
             "media_final": 0
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
+        print(resposta.json())
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}, resposta.json())
 

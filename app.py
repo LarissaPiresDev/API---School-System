@@ -127,7 +127,8 @@ def atualizar_professor(id):
 
         if salario < 1400:
             return jsonify({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}), 400
- 
+
+
     professores = users['Professores']
     for index, professor in enumerate(professores):
         if professor['id'] == id:
@@ -266,40 +267,6 @@ def atualizar_turma(id):
         }), 400
         
 
-
-    if 'descricao' in turma_atualizada:
-        if not isinstance(turma_atualizada['descricao'], str):
-            return jsonify({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}), 400
-    
-
-    if 'professor_id'  in turma_atualizada:
-        if not isinstance(turma_atualizada['professor_id'], int):
-            return jsonify ({'mensagem': 'A chave professor_id precisa ser um número inteiro'}), 400
-        
-        
-        if turma_atualizada['professor_id'] <= 0:
-            return jsonify({'mensagem': 'A chave professor_id precisa ser maior que zero'}), 400
-        
-    for turma in users['Turmas']:
-        if turma['professor_id'] == turma_atualizada['professor_id']:
-            return jsonify({'mensagem': 'Erro!!! Cada professor já está sendo responsável por uma sala, e não pode ser responsável por duas, por favor, coloque um professor livre para cuidar dessa sala'}), 400
-
-        prof_existe = False
-        for professor in users['Professores']:
-            if professor['id'] == turma_atualizada['professor_id']:
-                prof_existe = True
-                break
-        if not prof_existe:
-            return jsonify({'mensagem': 'Professor Id não encontrado, tente novamente '}), 404
-    
-
-    turmas = users['Turmas']
-    for index, turma in enumerate(turmas):
-        if turma['id'] == id:
-            turma_atualizada['id'] = turma['id']
-            users['Turmas'][index] = turma_atualizada
-            return jsonify({'mensagem': 'Turma atualizada com sucesso'}), 200
-    return jsonify({'mensagem': 'Erro, ID de turma não encontrado'}), 404
 
     if 'descricao' in turma_atualizada:
         if not isinstance(turma_atualizada['descricao'], str):
