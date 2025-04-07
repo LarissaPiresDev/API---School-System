@@ -801,7 +801,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Id de turma não encontrado'}, resposta.json())
         
-    def test_074_caso_data_de_nascimento_nao_for_string_ou_esteje_vazia(self):
+    def test_075_caso_data_de_nascimento_nao_for_string_ou_esteje_vazia(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": 12, 
@@ -816,7 +816,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'A chave data_nascimento precisa ser uma string e não pode estar vazia!!'}, resposta.json())
         
-    def test_075_caso_idade_de_aluno_nao_for_um_numero_inteiro(self):
+    def test_076_caso_idade_de_aluno_nao_for_um_numero_inteiro(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": "doze", 
@@ -832,7 +832,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'O valor informado para a chave idade precisa ser um número inteiro INTEIRO'}, resposta.json())
         
         
-    def test_076_caso_idade_de_aluno_nao_for_um_numero_maior_que_zero(self):
+    def test_077_caso_idade_de_aluno_nao_for_um_numero_maior_que_zero(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": -12, 
@@ -847,7 +847,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}, resposta.json())
 
-    def test_077_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_nao_forem_do_tipo_float(self):
+    def test_078_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_nao_forem_do_tipo_float(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": 12, 
@@ -862,7 +862,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam ser do tipo float'}, resposta.json())
 
-    def test_078_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_forem_menor_que_zero(self):
+    def test_079_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_forem_menor_que_zero(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": 12, 
@@ -877,7 +877,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser números negativos'}, resposta.json())
         
-    def test_079_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_forem_maiores_que_zero(self):
+    def test_080_caso_notas_primeiro_ou_segundo_semestre_ou_media_final_forem_maiores_que_zero(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": 12, 
@@ -893,7 +893,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}, resposta.json())
         
         
-    def test_080_caso_nao_encontre_o_id_do_aluno_informado_no_end_point(self):
+    def test_081_caso_nao_encontre_o_id_do_aluno_informado_no_end_point(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": 12, 
@@ -904,7 +904,11 @@ class TestStringMethods(unittest.TestCase):
             "media_final": 9.25
         }
         
-    def test_081_caso_atualizacao_de_aluno_de_certo(self):
+        resposta = requests.put('http://localhost:5003/alunos/1005', json=aluno_atualizado)
+        self.assertEqual(404, resposta.status_code)
+        self.assertEqual({'mensagem': 'Erro, Id de aluno não encontrado'}, resposta.json())
+        
+    def test_082_caso_atualizacao_de_aluno_de_certo(self):
         aluno_atualizado = {
             "nome": "Wender da Silva Santos Atualizado", 
             "idade": 12, 
@@ -919,21 +923,18 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(200, resposta.status_code)
         self.assertEqual({'mensagem': 'Aluno atualizada com sucesso'}, resposta.json())     
 
-        resposta = requests.put('http://localhost:5003/alunos/1005', json=aluno_atualizado)
-        self.assertEqual(404, resposta.status_code)
-        self.assertEqual({'mensagem': 'Erro, Id de aluno não encontrado'}, resposta.json())
 
-    def test_071_id_invalido_nao_inteiro_no_delete(self):
+    def test_083_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/1.5')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
 
-    def test_072_id_invalido_menor_igual_zero_delete(self):
+    def test_084_id_invalido_menor_igual_zero_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/0')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
     
-    def test_073_id_nao_encontrado_falha_ao_deletar(self):
+    def test_085_id_nao_encontrado_falha_ao_deletar(self):
         resposta = requests.delete('http://localhost:5003/alunos/9999')
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}, resposta.json())
