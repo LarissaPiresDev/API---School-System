@@ -938,3 +938,6 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.delete('http://localhost:5003/alunos/9999')
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}, resposta.json())
+           
+if __name__ == '__main__':
+    unittest.main()
