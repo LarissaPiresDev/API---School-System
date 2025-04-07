@@ -739,20 +739,35 @@ class TestStringMethods(unittest.TestCase):
         self.assertIn('chaves_invalidas', resposta.json())
         self.assertEqual(400, resposta.status_code)
         self.assertEqual(set(resposta.json()['chaves_invalidas']), {'nome_do_responsavel', 'endereço'})
+        
+    def test_071_se_nome_esta_vazio_ou_nao_e_uma_string(self):
+        aluno_atualizado = {
+            "nome": "", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'O valor para a chave aluno precisa ser uma string e não pode estar vazia'}, resposta.json())
 
 
 
-    def test_070_id_invalido_nao_inteiro_no_delete(self):
+    def test_071_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/1.5')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
 
-    def test_071_id_invalido_menor_igual_zero_delete(self):
+    def test_072_id_invalido_menor_igual_zero_delete(self):
         resposta = requests.delete('http://localhost:5003/alunos/0')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}, resposta.json())
     
-    def test_072_id_nao_encontrado_falha_ao_deletar(self):
+    def test_073_id_nao_encontrado_falha_ao_deletar(self):
         resposta = requests.delete('http://localhost:5003/alunos/9999')
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}, resposta.json())
