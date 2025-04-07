@@ -754,6 +754,36 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O valor para a chave aluno precisa ser uma string e não pode estar vazia'}, resposta.json())
+        
+    def test_072_se_turma_id_nao_for_inteiro(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": "doze", 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'A chave turma_id precisa ser um número inteiro'}, resposta.json())
+
+    def test_073_se_turma_id_for_menor_igual_a_zero(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": -12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25
+        }
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual({'mensagem': 'A chave turma_id precisa ser maior que zero'}, resposta.json())
 
 
 
