@@ -252,9 +252,24 @@ def atualizar_turma(id):
         
     turma_atualizada = request.json
 
+    if 'ativo' in turma_atualizada:
+        if not isinstance(turma_atualizada['ativo'], bool):
+            return jsonify({'mensagem': 'O valor para a chave ativo precisa ser do tipo boolean'}), 400
+        
+
+    chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
+    chaves_inseridas = set(turma_atualizada.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+        
+
 
     if 'descricao' in turma_atualizada:
-        if not isinstance(turma_atualizada['descricao'], str) or not turma_atualizada['descricao'].strip():
+        if not isinstance(turma_atualizada['descricao'], str):
             return jsonify({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}), 400
     
 
