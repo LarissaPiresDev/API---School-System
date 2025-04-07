@@ -409,6 +409,16 @@ def criar_aluno():
 
     return jsonify(novo_aluno), 201
 
+@app.route('/alunos/<id>', methods=['PUT'])
+def atualizar_alunos(id):    
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID de aluno informado no end point precisa ser um número inteiro'}), 400
+    
+    if id <= 0:
+        return jsonify({'mensagem': 'ID de aluno precisa ser maior que zero'}), 400
+
 @app.route('/alunos/<id>', methods=['DELETE'])
 def deletar_aluno(id):
 
