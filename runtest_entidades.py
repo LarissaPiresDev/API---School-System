@@ -410,7 +410,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de turma informado no end point precisa ser um número inteiro'}, resposta.json())
 
-    def test_040_csdo_id_de_turma_for_menor_igual_a_zero(self):
+    def test_041_csdo_id_de_turma_for_menor_igual_a_zero(self):
         turma_atualizada = { 
             "descricao": "7 ano E",
             "ativo": True,
@@ -420,7 +420,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de turma precisa ser maior que zero'}, resposta.json())
 
-    def test_041_se_caso_id_de_turma_nao_encontrado(self):
+    def test_042_se_caso_id_de_turma_nao_encontrado(self):
         turma_atualizada = { 
             "descricao": "7 ano E",
             "ativo": True,
@@ -431,7 +431,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Erro, ID de turma não encontrado'}, resposta.json())
 
-    def test_042_se_descricao_de_turma_nao_for_string(self):
+    def test_043_se_descricao_de_turma_nao_for_string(self):
         turma_atualizada = { 
             "descricao": 123456,
             "ativo": True,
@@ -442,7 +442,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}, resposta.json())
 
-    def test_043_caso_professor_id_nao_for_inteiro(self):
+    def test_044_caso_professor_id_nao_for_inteiro(self):
         turma_atualizada = { 
             "descricao": "7 ano E",
             "ativo": True,
@@ -452,7 +452,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'A chave professor_id precisa ser um número inteiro'}, resposta.json())
 
-    def test_044_caso_professor_id_for_menor_que_zero(self):
+    def test_045_caso_professor_id_for_menor_que_zero(self):
         turma_atualizada = { 
             "descricao": "7 ano E",
             "ativo": True,
@@ -462,7 +462,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'A chave professor_id precisa ser maior que zero'}, resposta.json())
     
-    def test_045_caso_professor_id_ja_esteja_em_uma_sala(self):
+    def test_046_caso_professor_id_ja_esteja_em_uma_sala(self):
         turma_atualizada = { 
             "descricao": "7 ano E",
             "ativo": True,
@@ -472,7 +472,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'Erro!!! Cada professor já está sendo responsável por uma sala, e não pode ser responsável por duas, por favor, coloque um professor livre para cuidar dessa sala'}, resposta.json())
     
-    def test_046_caso_professor_id_nao_encontrado(self):
+    def test_047_caso_professor_id_nao_encontrado(self):
         turma_atualizada = { 
             "descricao": "7 ano E",
             "ativo": True,
@@ -482,7 +482,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'Professor Id não encontrado, tente novamente '}, resposta.json())
 
-    def test_047_caso_ativo_esteje_e_nao_for_boolean(self):
+    def test_048_caso_ativo_esteje_e_nao_for_boolean(self):
         turma_atualizada = { 
             "descricao": "7 ano E",
             "ativo": "Ativada",
@@ -493,7 +493,7 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual({'mensagem': 'O valor para a chave ativo precisa ser do tipo boolean'}, resposta.json())
 
 
-    def test_042_chaves_invalidas_no_update(self):
+    def test_049_chaves_invalidas_no_update(self):
         turma_atualizada = {
             "descricao": "7 ano E",
             "ativo": True,
@@ -504,18 +504,30 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(400, resposta.status_code)
         self.assertEqual('Chaves adicionais não necessárias, retire-as', resposta.json()['mensagem'])
         self.assertIn('nota_maxima', resposta.json()['chaves_invalidas'])
+
+    def test_050_caso_de_certo_o_put_de_turma(self):
+        turma_atualizada = { 
+            "descricao": "7 ano E",
+            "ativo": True,
+            "professor_id": 4 
+        }
+
+        resposta = requests.put('http://localhost:5003/turmas/11', json=turma_atualizada)
+        self.assertEqual(200, resposta.status_code)
+        self.assertEqual({'mensagem': 'Turma atualizada com sucesso'}, resposta.json())
+
     
-    def test_044_id_invalido_nao_inteiro_no_delete(self):
+    def test_051_id_invalido_nao_inteiro_no_delete(self):
         resposta = requests.delete('http://localhost:5003/turmas/1.5')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser um número inteiro para que a turma possa ser deletada.'}, resposta.json())
 
-    def test_045_id_invalido_menor_igual_zero_delete(self):
+    def test_052_id_invalido_menor_igual_zero_delete(self):
         resposta = requests.delete('http://localhost:5003/turmas/0')
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de turma inválido. O ID precisa ser maior que zero para que a turma possa ser deletada.'}, resposta.json())
     
-    def test_046_id_nao_encontrado_falha_ao_deletar(self):
+    def test_053_id_nao_encontrado_falha_ao_deletar(self):
         resposta = requests.delete('http://localhost:5003/turmas/9999')
         self.assertEqual(404, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de turma não encontrado/inexistente, falha ao deletar'}, resposta.json())
