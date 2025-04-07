@@ -428,7 +428,11 @@ def atualizar_alunos(id):
         return jsonify({
             'mensagem': 'Chaves adicionais não necessárias, retire-as',
             'chaves_invalidas': list(chaves_invalidas)
-        }), 400    
+        }), 400
+        
+    if 'nome' in aluno_atualizado:
+        if not isinstance(aluno_atualizado['nome'], str) or not aluno_atualizado['nome'].strip():
+            return jsonify({'mensagem': 'O valor para a chave aluno precisa ser uma string e não pode estar vazia'}), 400    
 
 @app.route('/alunos/<id>', methods=['DELETE'])
 def deletar_aluno(id):
