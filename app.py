@@ -453,6 +453,17 @@ def atualizar_alunos(id):
     if 'data_nascimento' in aluno_atualizado:
         if not isinstance(aluno_atualizado['data_nascimento'], str) or not aluno_atualizado['data_nascimento'].strip():
             return jsonify({'mensagem': 'A chave data_nascimento precisa ser uma string e não pode estar vazia!!'}), 400
+        
+    if 'idade' in aluno_atualizado:
+        
+        try:
+           aluno_atualizado['idade']  = int(aluno_atualizado['idade'])
+        except ValueError:       
+            return jsonify({'mensagem': 'O valor informado para a chave idade precisa ser um número inteiro INTEIRO'}), 400
+        
+        if aluno_atualizado['idade'] <= 0:
+            return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}),400
+        
 
 @app.route('/alunos/<id>', methods=['DELETE'])
 def deletar_aluno(id):
