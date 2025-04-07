@@ -128,10 +128,6 @@ def atualizar_professor(id):
         if salario < 1400:
             return jsonify({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}), 400
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 3f2919906aa6d951beac75d57745cb10d332d456
     professores = users['Professores']
     for index, professor in enumerate(professores):
         if professor['id'] == id:
