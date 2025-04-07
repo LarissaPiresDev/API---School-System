@@ -720,6 +720,25 @@ class TestStringMethods(unittest.TestCase):
         resposta = requests.put('http://localhost:5003/alunos/-1', json=aluno_atualizado)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID de aluno precisa ser maior que zero'}, resposta.json())
+        
+    
+    def test_070_se_chaves_invalidas(self):
+        aluno_atualizado = {
+            "nome": "Wender da Silva Santos Atualizado", 
+            "idade": 12, 
+            "turma_id": 12, 
+            "data_nascimento": "07-08-2012", 
+            "nota_primeiro_semestre": 9.5, 
+            "nota_segundo_semestre": 9.0,
+            "media_final": 9.25,
+            "nome_do_responsavel": "Jose Elis dos Santos",
+            "endereço": "Casa minha, vida nossa 1930"
+        }
+
+        resposta = requests.put('http://localhost:5003/alunos/105', json=aluno_atualizado)
+        self.assertIn('chaves_invalidas', resposta.json())
+        self.assertEqual(400, resposta.status_code)
+        self.assertEqual(set(resposta.json()['chaves_invalidas']), {'nome_do_responsavel', 'endereço'})
 
 
 
