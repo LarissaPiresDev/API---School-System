@@ -1,12 +1,17 @@
 from flask import Flask, jsonify, request
 from users import users
 from config import app
+from alunos.alunos_routes import alunos_blueprint
 
+app.register_blueprint(alunos_blueprint)
 
 
 #--------------------------------------------PROFESSORES------------------------------------------- #
 
-@app.route('/professores/', methods=['GET'])
+
+
+
+""" @app.route('/professores/', methods=['GET'])
 @app.route('/professores', methods=['GET'])
 def get_professores():
     professores = users['Professores']
@@ -504,10 +509,10 @@ def deletar_aluno(id):
         if aluno['id'] == id:
             users['Alunos'].pop(pos)
             return jsonify({'mensagem': f'aluno {aluno["nome"]} deletado(a) com sucesso'}), 200
-    return jsonify({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}), 404 
+    return jsonify({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}), 404 """
 
 
 
 
 if __name__ == '__main__':
-    app.run(host=app.config["HOST"], port = app.config['PORT'],debug=app.config['DEBUG'])
+    app.run(host=app.config["HOST"], port = app.config['PORT'],debug=app.config['DEBUG']) 
