@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from users import users
+from config import app
 
-app = Flask(__name__)
 
 
 #--------------------------------------------PROFESSORES------------------------------------------- #
@@ -510,4 +510,4 @@ def deletar_aluno(id):
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port = 5003,debug=True)
+    app.run(host=app.config["HOST"], port = app.config['PORT'],debug=app.config['DEBUG'])
