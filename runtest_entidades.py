@@ -581,7 +581,7 @@ class TestStringMethods(unittest.TestCase):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
-            "turma_id": -1,
+            "turma_id": -1
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
         self.assertEqual(400, resposta.status_code)
@@ -591,7 +591,7 @@ class TestStringMethods(unittest.TestCase):
         novo_aluno = {
             "nome": "Jose Paulo",
             "idade": 13,
-            "turma_id": 10,
+            "turma_id": 10
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
         self.assertEqual(404, resposta.status_code)
@@ -639,7 +639,7 @@ class TestStringMethods(unittest.TestCase):
         }
         resposta = requests.post('http://localhost:5003/alunos', json=novo_aluno)
         self.assertEqual(400, resposta.status_code)
-        self.assertEqual({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa'}, resposta.json())
+        self.assertEqual({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa e não pode estar vazia'}, resposta.json())
 
 
     def test_065_se_as_notas_do_semestre_um_ou_2_junto_da_media_nao_forem_inteiros_ou_float(self):
