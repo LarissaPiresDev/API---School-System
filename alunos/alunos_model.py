@@ -59,6 +59,10 @@ def criar_aluno(novo_aluno):
 def atualizar_aluno(id, aluno_atualizado):
     aluno = aluno_por_id(id)
     aluno.update(aluno_atualizado)
+    
+def deletar_aluno(id):
+    aluno = aluno_por_id(id)
+    users['Alunos'].remove(aluno)
 
 
 class TurmaNaoEncontrada(Exception):

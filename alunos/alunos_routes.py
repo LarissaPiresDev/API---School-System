@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .alunos_model import AlunoNaoEncontrado, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno, atualizar_aluno
+from .alunos_model import AlunoNaoEncontrado, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno, atualizar_aluno, deletar_aluno
 
 alunos_blueprint = Blueprint('alunos', __name__)
 
@@ -166,3 +166,21 @@ def update_aluno(id):
     
     except AlunoNaoEncontrado:
         return jsonify({'mensagem': 'Erro, Id de aluno não encontrado'}), 404
+    
+@alunos_blueprint.route('/alunos/<id>', methods=['DELETE'])
+def delete_aluno(id):
+
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
+    
+    if id <= 0:
+        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
+    
+
+    try:
+        aluno = deletar_aluno(id)
+        return jsonify({'mensagem': f'aluno {aluno["nome"]} deletado(a) com sucesso'}), 200
+    except AlunoNaoEncontrado:
+        return jsonify({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}), 404
