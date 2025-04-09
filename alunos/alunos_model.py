@@ -56,6 +56,10 @@ def criar_aluno(novo_aluno):
     users['Alunos'].append(novo_aluno)
     return novo_aluno
 
+def atualizar_aluno(id, aluno_atualizado):
+    aluno = aluno_por_id(id)
+    aluno.update(aluno_atualizado)
+
 
 class TurmaNaoEncontrada(Exception):
     pass

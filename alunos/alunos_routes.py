@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .alunos_model import AlunoNaoEncontrado, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno
+from .alunos_model import AlunoNaoEncontrado, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno, atualizar_aluno
 
 alunos_blueprint = Blueprint('alunos', __name__)
 
@@ -90,3 +90,79 @@ def create_aluno():
     novo_aluno_criado = criar_aluno(novo_aluno)
 
     return jsonify(novo_aluno_criado), 201
+
+
+@alunos_blueprint.route('/alunos/<id>', methods=['PUT'])
+def update_aluno(id):    
+    try:
+        id = int(id)
+    except ValueError:
+        return jsonify({'mensagem': 'ID de aluno informado no end point precisa ser um número inteiro'}), 400
+    
+    if id <= 0:
+        return jsonify({'mensagem': 'ID de aluno precisa ser maior que zero'}), 400
+    
+    aluno_atualizado = request.json
+
+    chaves_esperadas = {'nome', 'idade', 'turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre', 'media_final'}
+    chaves_inseridas = set(aluno_atualizado.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+        
+    if 'nome' in aluno_atualizado:
+        if not isinstance(aluno_atualizado['nome'], str) or not aluno_atualizado['nome'].strip():
+            return jsonify({'mensagem': 'O valor para a chave aluno precisa ser uma string e não pode estar vazia'}), 400
+        
+    if 'turma_id' in aluno_atualizado:
+        
+        if not isinstance(aluno_atualizado['turma_id'], int):
+            return jsonify ({'mensagem': 'A chave turma_id precisa ser um número inteiro'}), 400
+        
+        if aluno_atualizado['turma_id'] <= 0:
+            return jsonify({'mensagem': 'A chave turma_id precisa ser maior que zero'}), 400
+        
+        try:
+            turmaexiste = achar_turma(aluno_atualizado['turma_id'])
+        except TurmaNaoEncontrada:
+            return jsonify({'mensagem': 'Id de turma não encontrado'}), 404
+       
+    if 'data_nascimento' in aluno_atualizado:
+        if not isinstance(aluno_atualizado['data_nascimento'], str) or not aluno_atualizado['data_nascimento'].strip():
+            return jsonify({'mensagem': 'A chave data_nascimento precisa ser uma string e não pode estar vazia!!'}), 400
+        
+    if 'idade' in aluno_atualizado:
+        
+        try:
+           aluno_atualizado['idade']  = int(aluno_atualizado['idade'])
+        except ValueError:       
+            return jsonify({'mensagem': 'O valor informado para a chave idade precisa ser um número inteiro INTEIRO'}), 400
+        
+        if aluno_atualizado['idade'] <= 0:
+            return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}), 400
+        
+    if 'nota_primeiro_semestre' in aluno_atualizado or 'nota_segundo_semestre' in aluno_atualizado or 'media_final' in aluno_atualizado:
+        try:
+            aluno_atualizado['nota_primeiro_semestre'] = float(aluno_atualizado['nota_primeiro_semestre'])
+            aluno_atualizado['nota_segundo_semestre'] = float(aluno_atualizado['nota_segundo_semestre'])
+            aluno_atualizado['media_final'] = float(aluno_atualizado['media_final'])
+        except ValueError:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam ser do tipo float'}), 400
+
+        if aluno_atualizado['nota_primeiro_semestre'] < 0 or aluno_atualizado['nota_segundo_semestre'] < 0 or aluno_atualizado['media_final'] < 0:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser números negativos'}), 400 
+            
+        if aluno_atualizado['nota_primeiro_semestre'] > 10 or aluno_atualizado['nota_segundo_semestre'] > 10 or aluno_atualizado['media_final'] > 10:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}), 400
+        
+        
+    try:
+        
+        aluno = atualizar_aluno(id, aluno_atualizado)
+        return jsonify({'mensagem': 'Aluno atualizada com sucesso'}), 200
+    
+    except AlunoNaoEncontrado:
+        return jsonify({'mensagem': 'Erro, Id de aluno não encontrado'}), 404
