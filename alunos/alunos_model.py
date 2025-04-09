@@ -30,4 +30,13 @@ class AlunoNaoEncontrado(Exception):
     
 def listar_alunos():
     return users['Alunos']
+
+def aluno_por_id(id):
+    alunos = users['Alunos']
+    for aluno in alunos:
+        if aluno['id'] == id:
+            return aluno
+    raise AlunoNaoEncontrado
+    
+    
    
