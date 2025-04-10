@@ -10,6 +10,27 @@ users = {
     ]
 }
 
+class ProfessorNaoEncontrado(Exception):
+    pass
+
+class ProfessorIdNaoInteiro(Exception):
+    pass
+
+class ProfessorIdMenorQueUm(Exception):
+    pass
 
 def listar_professores():
     return users["Professores"]
+
+def listar_professor_por_id(id):
+    try:
+        id = int(id)
+    except ValueError:
+        raise ProfessorIdNaoInteiro
+    if id <= 0:
+        raise ProfessorIdMenorQueUm
+    professores = users['Professores']
+    for professor in professores:
+        if professor['id'] == id:
+            return professor
+    raise ProfessorNaoEncontrado
