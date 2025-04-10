@@ -19,5 +19,27 @@ users = {
 class TurmaNaoEncontrada(Exception):
     pass
 
+class TurmaIdNaoInteiro(Exception):
+    pass
+
+class TurmaIdMenorQueUm(Exception):
+    pass
+
 def listarTurmas():
     return users["Turmas"]
+
+def listarTurmaPorId(id):
+    try:
+        id = int(id)
+    except ValueError:
+        raise TurmaIdNaoInteiro
+    
+    if id <= 0:
+        raise TurmaIdMenorQueUm
+    for turma in users["Turmas"]:
+        if turma["id"] == id:
+            return turma 
+    raise TurmaNaoEncontrada
+        
+
+        
