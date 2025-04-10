@@ -150,12 +150,23 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(set(resposta.json()['chaves_invalidas']), {'endereco', 'telefone'})
 
     def test_015_se_id_nao_for_int_no_put(self):
-        resposta = requests.put('http://localhost:5003/professores/1.5')
+        prof_atualizado = {
+            "nome": "João",
+            "idade": 55,
+            "materia": "Artes e Flisofia"
+        }
+         
+        resposta = requests.put('http://localhost:5003/professores/1.5', json=prof_atualizado)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}, resposta.json())
     
     def test_016_se_id_de_professor_no_put_menor_igual_que_zero(self):
-        resposta = requests.put('http://localhost:5003/professores/-1')
+        prof_atualizado = {
+            "nome": "João",
+            "idade": 55,
+            "materia": "Artes e Flisofia"
+        }
+        resposta = requests.put('http://localhost:5003/professores/-1', json=prof_atualizado)
         self.assertEqual(400, resposta.status_code)
         self.assertEqual({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}, resposta.json())
 
