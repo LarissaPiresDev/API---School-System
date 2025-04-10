@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .professores_model import listar_professores, ProfessorIdMenorQueUm, ProfessorIdNaoInteiro, ProfessorNaoEncontrado, listar_professor_por_id, criar_professor
+from .professores_model import listar_professores, ProfessorIdMenorQueUm, ProfessorIdNaoInteiro, ProfessorNaoEncontrado, listar_professor_por_id, criar_professor, atualizar_professor
 
 professor_blueprint = Blueprint('professores', __name__)
 
@@ -67,3 +67,64 @@ def create_professor():
     novo_professor_criado = criar_professor(novo_professor)
 
     return jsonify(novo_professor_criado), 201
+
+@professor_blueprint.route('/professores/<id>', methods=['PUT'])
+def update_professor(id):    
+    
+    prof_atualizado = request.json
+    
+    
+    chaves_esperadas = {'nome', 'idade', 'materia', 'salario'}
+    chaves_inseridas = set(prof_atualizado.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias para atualização, por favor retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+    
+    if 'nome' in prof_atualizado and (not isinstance(prof_atualizado['nome'], str) or not prof_atualizado['nome'].strip()):
+        return jsonify({'mensagem': 'Para realizar atualização de professor valor para a chave nome precisa ser do tipo STRING e não pode estar vazia'}), 400
+    
+    
+    if 'idade' in prof_atualizado:
+        try:
+            idade = int(prof_atualizado['idade'])
+        except ValueError:
+            return jsonify({'mensagem': 'Essa nova idade para professor está inválida, idade tem que ser obrigatóriamente do tipo INTEIRO'}), 400
+        
+        if idade > 120:
+            return jsonify({'mensagem': 'Essa nova idade está muito avançada para dar aulas, talvez nem esteja vivo'}), 400
+        
+        if idade < 18:
+            return jsonify({'mensagem': 'Idade professor não pode ser negativa ou menor que 18 anos'}), 400
+        
+    if 'materia' in prof_atualizado:
+        if not isinstance(prof_atualizado['materia'], str) or not prof_atualizado['materia'].strip():
+            return jsonify({'mensagem': 'O valor inserido em chave matéria precisa ser do tipo String e não pode estar vazia'}), 400
+
+
+    if 'salario' in prof_atualizado:
+        try:
+            salario = float(prof_atualizado['salario'])
+        except ValueError:
+            return jsonify({'mensagem': 'O valor da chave salário precisa ser do um número com ponto flutuante (FLOAT, ex: 1400.0), ou int(1400) para que possa existir a converção'}), 400
+
+        if salario < 1400:
+            return jsonify({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}), 400
+
+
+    try:
+        professor = atualizar_professor(id, prof_atualizado)
+        return jsonify({'mensagem': f'Professor {prof_atualizado["nome"]} atualizado com sucesso'}), 200
+    
+    except ProfessorIdNaoInteiro:
+        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro'}), 400
+    
+    except ProfessorIdMenorQueUm:
+        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO'}), 400
+    
+    except ProfessorNaoEncontrado:
+        return jsonify({'mensagem': 'id não encontrado'}), 404
+            
+

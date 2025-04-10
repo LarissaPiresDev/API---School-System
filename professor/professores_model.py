@@ -40,4 +40,7 @@ def criar_professor(novo_professor):
     novo_professor['id'] = id_novo
     users["Professores"].append(novo_professor)
     return novo_professor
-    
+
+def atualizar_professor(id, prof_atualizado):
+    professor = listar_professor_por_id(id)
+    professor.update(prof_atualizado)
