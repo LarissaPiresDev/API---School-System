@@ -173,16 +173,6 @@ def update_aluno(id):
     
 @alunos_blueprint.route('/alunos/<id>', methods=['DELETE'])
 def delete_aluno(id):
-
-    try:
-        id = int(id)
-    except ValueError:
-        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
-    
-    if id <= 0:
-        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
-    
-
     try:
         aluno = deletar_aluno(id)
         return jsonify({'mensagem': f'aluno deletado(a) com sucesso'}), 200
