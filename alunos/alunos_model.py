@@ -38,12 +38,24 @@ users = {
 class AlunoNaoEncontrado(Exception):
     pass
 
+class AlunoIdNaoInteiro(Exception):
+    pass
+
+class AlunoIdMenorQueUm(Exception):
+    pass
+
 
     
 def listar_alunos():
     return users['Alunos']
 
 def aluno_por_id(id):
+    try:
+        id = int(id)
+    except ValueError:
+        raise AlunoIdNaoInteiro
+    if id <= 0:
+        raise AlunoIdMenorQueUm
     alunos = users['Alunos']
     for aluno in alunos:
         if aluno['id'] == id:

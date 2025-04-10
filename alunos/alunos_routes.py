@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .alunos_model import AlunoNaoEncontrado, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno, atualizar_aluno, deletar_aluno
+from .alunos_model import AlunoNaoEncontrado, AlunoIdNaoInteiro, AlunoIdMenorQueUm, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno, atualizar_aluno, deletar_aluno
 
 alunos_blueprint = Blueprint('alunos', __name__)
 
@@ -10,19 +10,17 @@ def get_alunos():
 @alunos_blueprint.route('/alunos/<id>', methods=['GET'])
 def alunoPorId(id):
     try:
-        try:
-            id = int(id)
-        except ValueError:
-            return jsonify({'mensagem': 'ID inserido para aluno tem que ser um numero inteiro'}), 400
-        
-        if id <=0:
-            return jsonify({'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'}), 400
-        
         aluno = aluno_por_id(id)
         return jsonify(aluno)
     
+    except AlunoIdNaoInteiro:
+        return jsonify({'mensagem': 'ID inserido para aluno tem que ser um numero inteiro'}), 400
+    except AlunoIdMenorQueUm:
+        
+        return jsonify({'mensagem': 'ID do aluno nao pode ser menor ou igual a que zero'}), 400
     except AlunoNaoEncontrado:
         return jsonify({'mensagem': 'Aluno(a) nao encontrado(a)/inexistente'}), 404
+    
     
 
 
@@ -164,6 +162,12 @@ def update_aluno(id):
         aluno = atualizar_aluno(id, aluno_atualizado)
         return jsonify({'mensagem': 'Aluno atualizada com sucesso'}), 200
     
+    except AlunoIdNaoInteiro:
+        return jsonify({'mensagem': 'ID de aluno informado no end point precisa ser um número inteiro'}), 400
+    
+    except AlunoIdMenorQueUm:
+        return jsonify({'mensagem': 'ID de aluno precisa ser maior que zero'}), 400
+    
     except AlunoNaoEncontrado:
         return jsonify({'mensagem': 'Erro, Id de aluno não encontrado'}), 404
     
@@ -181,6 +185,13 @@ def delete_aluno(id):
 
     try:
         aluno = deletar_aluno(id)
-        return jsonify({'mensagem': f'aluno {aluno["nome"]} deletado(a) com sucesso'}), 200
+        return jsonify({'mensagem': f'aluno deletado(a) com sucesso'}), 200
+    
+    except AlunoIdNaoInteiro:
+        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser um número inteiro para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
+    
+    except AlunoIdMenorQueUm:
+        return jsonify({'mensagem': 'ID de aluno(a) inválido. O ID precisa ser maior que zero para que o(a) aluno(a) possa ser deletado(a) com sucesso.'}), 400
+    
     except AlunoNaoEncontrado:
         return jsonify({'mensagem': 'ID de aluno(a) não encontrado(a), falha ao deletar'}), 404
