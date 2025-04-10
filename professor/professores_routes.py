@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .professores_model import listar_professores, ProfessorIdMenorQueUm, ProfessorIdNaoInteiro, ProfessorNaoEncontrado, listar_professor_por_id, criar_professor, atualizar_professor
+from .professores_model import listar_professores, ProfessorIdMenorQueUm, ProfessorIdNaoInteiro, ProfessorNaoEncontrado, listar_professor_por_id, criar_professor, atualizar_professor, deletar_professor
 
 professor_blueprint = Blueprint('professores', __name__)
 
@@ -127,4 +127,17 @@ def update_professor(id):
     except ProfessorNaoEncontrado:
         return jsonify({'mensagem': 'id não encontrado'}), 404
             
-
+@professor_blueprint.route('/professores/<id>', methods=['DELETE'])        
+def delete_professor(id):
+    try:
+        professor = deletar_professor(id)
+        return jsonify({'mensagem': 'Professor deletado com sucesso'}), 200
+    
+    except ProfessorIdNaoInteiro:
+        return jsonify({'mensagem': 'ID IVÁLIDO, id precisa ser do tipo inteiro para que eu possa deletar'}), 400
+    
+    except ProfessorIdMenorQueUm:
+        return jsonify({'mensagem': 'Valor de ID inválido, ID precisa ser MAIOR QUE ZERO para que eu possa deletar'}), 400
+    
+    except ProfessorNaoEncontrado:
+        return jsonify({'mensagem': 'id de professor não encontrado, falha ao deletar'}), 404  

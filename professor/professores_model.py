@@ -44,3 +44,7 @@ def criar_professor(novo_professor):
 def atualizar_professor(id, prof_atualizado):
     professor = listar_professor_por_id(id)
     professor.update(prof_atualizado)
+    
+def deletar_professor(id):
+    professor = listar_professor_por_id(id)
+    users["Professores"].remove(professor)
