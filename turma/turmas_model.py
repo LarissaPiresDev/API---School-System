@@ -40,6 +40,10 @@ def listarTurmaPorId(id):
         if turma["id"] == id:
             return turma 
     raise TurmaNaoEncontrada
+
+def deletarTurma(id):
+    turma = listarTurmaPorId(id)
+    users["Turmas"].remove(turma)
         
 
         
