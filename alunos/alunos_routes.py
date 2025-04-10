@@ -92,14 +92,6 @@ def create_aluno():
 
 @alunos_blueprint.route('/alunos/<id>', methods=['PUT'])
 def update_aluno(id):    
-    try:
-        id = int(id)
-    except ValueError:
-        return jsonify({'mensagem': 'ID de aluno informado no end point precisa ser um número inteiro'}), 400
-    
-    if id <= 0:
-        return jsonify({'mensagem': 'ID de aluno precisa ser maior que zero'}), 400
-    
     aluno_atualizado = request.json
 
     chaves_esperadas = {'nome', 'idade', 'turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre', 'media_final'}
