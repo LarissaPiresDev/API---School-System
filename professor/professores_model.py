@@ -34,3 +34,10 @@ def listar_professor_por_id(id):
         if professor['id'] == id:
             return professor
     raise ProfessorNaoEncontrado
+
+def criar_professor(novo_professor):
+    id_novo = max([professor['id'] for professor in users['Professores']]) + 1
+    novo_professor['id'] = id_novo
+    users["Professores"].append(novo_professor)
+    return novo_professor
+    
