@@ -25,6 +25,12 @@ class TurmaIdNaoInteiro(Exception):
 class TurmaIdMenorQueUm(Exception):
     pass
 
+class turmaDescricaoJaExiste(Exception):
+    pass
+
+class ProfessorJaEstaEmUmaSala(Exception):
+    pass
+
 def listarTurmas():
     return users["Turmas"]
 
@@ -44,6 +50,28 @@ def listarTurmaPorId(id):
 def deletarTurma(id):
     turma = listarTurmaPorId(id)
     users["Turmas"].remove(turma)
+    
+def criarturma(nova_turma):
+    for turma in users["Turmas"]:
+        if nova_turma['descricao'] == turma['descricao']:
+            raise turmaDescricaoJaExiste
+        if turma['professor_id'] == nova_turma['professor_id']:
+            raise ProfessorJaEstaEmUmaSala
+
+    id_novo = max(turma['id'] for turma in users["Turmas"]) + 1 
+    nova_turma['id'] = id_novo 
+    users["Turmas"].append(nova_turma)
+    
+class professorNaoEncontrado(Exception):
+    pass
+
+def achar_professor(professor_id):
+    for professor in users["Professores"]:
+        if professor['id'] == professor_id:
+            return True
+    raise professorNaoEncontrado
+
+    
         
 
         
