@@ -62,6 +62,16 @@ def criarturma(nova_turma):
     nova_turma['id'] = id_novo 
     users["Turmas"].append(nova_turma)
     
+def atualizar_turma(id, turma_atualizada):
+    for turma in users["Turmas"]:
+        if turma_atualizada['descricao'].strip().lower() == turma['descricao'].strip().lower():
+            raise turmaDescricaoJaExiste        
+        if turma['professor_id'] == turma_atualizada['professor_id'] and id != turma['id']:
+            raise ProfessorJaEstaEmUmaSala
+
+    turma = listarTurmaPorId(id)
+    turma.update(turma_atualizada)
+    
 class professorNaoEncontrado(Exception):
     pass
 

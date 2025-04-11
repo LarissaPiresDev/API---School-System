@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .turmas_model import listarTurmas, TurmaIdMenorQueUm, TurmaIdNaoInteiro, TurmaNaoEncontrada, listarTurmaPorId, deletarTurma, criarturma, professorNaoEncontrado, achar_professor, turmaDescricaoJaExiste, ProfessorJaEstaEmUmaSala
+from .turmas_model import listarTurmas, TurmaIdMenorQueUm, TurmaIdNaoInteiro, TurmaNaoEncontrada, listarTurmaPorId, deletarTurma, criarturma, professorNaoEncontrado, achar_professor, turmaDescricaoJaExiste, ProfessorJaEstaEmUmaSala, atualizar_turma
 
 turma_blueprint = Blueprint('turmas', __name__)
 
@@ -84,6 +84,66 @@ def criar_turma():
          return jsonify({'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'}), 400
         
 
+
+@turma_blueprint.route('/turmas/<id>', methods=['PUT'])
+def update_turma(id):
+    turma_atualizada = request.json
+
+    if 'ativo' in turma_atualizada:
+        if not isinstance(turma_atualizada['ativo'], bool):
+            return jsonify({'mensagem': 'O valor para a chave ativo precisa ser do tipo boolean'}), 400
+        
+
+    chaves_esperadas = {'descricao', 'professor_id', 'ativo'}
+    chaves_inseridas = set(turma_atualizada.keys())
+    chaves_invalidas = chaves_inseridas - chaves_esperadas
+    if chaves_invalidas:
+        return jsonify({
+            'mensagem': 'Chaves adicionais não necessárias, retire-as',
+            'chaves_invalidas': list(chaves_invalidas)
+        }), 400
+        
+
+
+    if 'descricao' in turma_atualizada:
+        if not isinstance(turma_atualizada['descricao'], str):
+            return jsonify({'mensagem': 'O novo valor para a chave descrição precisa ser uma STRING'}), 400
+    
+
+    if 'professor_id' in turma_atualizada:
+        if not isinstance(turma_atualizada['professor_id'], int):
+            return jsonify ({'mensagem': 'A chave professor_id precisa ser um número inteiro'}), 400
+        
+        
+        
+        if turma_atualizada['professor_id'] <= 0:
+            return jsonify({'mensagem': 'A chave professor_id precisa ser maior que zero'}), 400
+        
+        try:
+            professor_existe = achar_professor(turma_atualizada['professor_id'])
+        
+        except professorNaoEncontrado:
+            return jsonify({'mensagem': 'Professor Id não encontrado, tente novamente '}), 404   
+
+
+
+    try:
+        turma = atualizar_turma(id, turma_atualizada)
+        return jsonify({'mensagem': 'Turma atualizada com sucesso'}), 200
+        
+    except TurmaIdNaoInteiro:
+        return jsonify({'mensagem': 'ID de turma informado no end point precisa ser um número inteiro'}), 400
+        
+    except TurmaIdMenorQueUm:
+        return jsonify({'mensagem': 'ID de turma precisa ser maior que zero'}), 400
+        
+    except TurmaNaoEncontrada:
+        return jsonify({'mensagem': 'Erro, ID de turma não encontrado'}), 404
+    
+    except ProfessorJaEstaEmUmaSala:
+        return jsonify({'mensagem': 'Erro!!! Cada professor já está sendo responsável por uma sala, e não pode ser responsável por duas, por favor, coloque um professor livre para cuidar dessa sala'}), 400
+        
+        
 
 
 
