@@ -53,7 +53,7 @@ def deletarTurma(id):
     
 def criarturma(nova_turma):
     for turma in users["Turmas"]:
-        if nova_turma['descricao'] == turma['descricao']:
+        if nova_turma['descricao'].strip().lower() == turma['descricao'].strip().lower():
             raise turmaDescricaoJaExiste
         if turma['professor_id'] == nova_turma['professor_id']:
             raise ProfessorJaEstaEmUmaSala

@@ -79,7 +79,7 @@ def criar_turma():
         return jsonify(nova_turma_criada), 201
     
     except turmaDescricaoJaExiste: 
-        return jsonify({'mensagem': f'A turma com a descricao {nova_turma["descricao"]} ja existe'}), 400
+        return jsonify({'mensagem': f'A turma com a descricao {nova_turma["descricao"].title()} ja existe'}), 400
     except ProfessorJaEstaEmUmaSala:
          return jsonify({'mensagem': 'O professor cujo id mencionado já é responsavel por uma sala, insira um id de professor que nao esta sendo responsavel por alguma turma'}), 400
         
