@@ -3,7 +3,7 @@ from turma.turmas_model import listarTurmas
 from datetime import datetime, date
 from config import db
 
-Class Professores(db.Model):
+class Professores(db.Model):
     __tablename__ = "professores"
     
     id = db.Column (db.Integer, primary_key=True)
@@ -15,38 +15,12 @@ Class Professores(db.Model):
     turma = db.relationship("Turma", back_populates="professores")
     turma_id = db.Column (db.Integer, db.ForeignKey("turmas.id"), nullable=False)
     
-    def __init__ (self, nome, data_nascimento, idade, turma, turma_id):
+    def __init__ (self, nome, idade, turma, turma_id):
         self.nome = nome
-        self.data_nascimento = data_nascimento
         self.idade =  idade
         self.turma = turma
         self.turma_id = turma_id
-        
     
-    
-
-
-
-
-
-
-
-
-
-
-
-
-users = {
-    "Professores": [
-        {"id": 1, "nome": "Simonica", "idade": 34, "materia": "matematica", "salario": 3500.00},
-        {"id": 2, "nome": "Ione", "idade": 35, "materia": "portugues", "salario": 3800.00},
-        {"id": 3, "nome": "Francisco", "idade": 74, "materia": "Ed. Fisica", "salario": 5200.00},
-        {"id": 4, "nome": "Daniel", "idade": 74, "materia": "Historia", "salario": 1800.00},
-        {"id": 5, "nome": "Mariana", "idade": 28, "materia": "Artes", "salario": 3200.00},
-        {"id": 6, "nome": "Patricia", "idade": 34, "materia": "Quimica", "salario": 4200.00},
-        {"id": 7, "nome": "Maria", "idade": 67, "materia": "Portugues", "salario": 1900.00}
-    ]
-}
 
 class ProfessorNaoEncontrado(Exception):
     pass

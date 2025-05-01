@@ -53,7 +53,7 @@ def deletarTurma(id):
     
 def criarturma(nova_turma):
     for turma in users["Turmas"]:
-        if nova_turma['descricao'] == turma['descricao']:
+        if nova_turma['descricao'].strip().lower() == turma['descricao'].strip().lower():
             raise turmaDescricaoJaExiste
         if turma['professor_id'] == nova_turma['professor_id']:
             raise ProfessorJaEstaEmUmaSala
@@ -61,6 +61,16 @@ def criarturma(nova_turma):
     id_novo = max(turma['id'] for turma in users["Turmas"]) + 1 
     nova_turma['id'] = id_novo 
     users["Turmas"].append(nova_turma)
+    
+def atualizar_turma(id, turma_atualizada):
+    for turma in users["Turmas"]:
+        if turma_atualizada['descricao'].strip().lower() == turma['descricao'].strip().lower():
+            raise turmaDescricaoJaExiste        
+        if turma['professor_id'] == turma_atualizada['professor_id'] and id != turma['id']:
+            raise ProfessorJaEstaEmUmaSala
+
+    turma = listarTurmaPorId(id)
+    turma.update(turma_atualizada)
     
 class professorNaoEncontrado(Exception):
     pass
