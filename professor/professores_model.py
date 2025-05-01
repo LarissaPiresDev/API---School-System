@@ -1,3 +1,41 @@
+
+from turma.turmas_model import listarTurmas
+from datetime import datetime, date
+from config import db
+
+Class Professores(db.Model):
+    __tablename__ = "professores"
+    
+    id = db.Column (db.Integer, primary_key=True)
+    nome = db.Column (db.String(100), nullable=False)
+    idade = db.Column (db.Integer, nullable=False)
+    data_nascimento = db.Column (db.Date, nullable=False)
+    
+
+    turma = db.relationship("Turma", back_populates="professores")
+    turma_id = db.Column (db.Integer, db.ForeignKey("turmas.id"), nullable=False)
+    
+    def __init__ (self, nome, data_nascimento, idade, turma, turma_id):
+        self.nome = nome
+        self.data_nascimento = data_nascimento
+        self.idade =  idade
+        self.turma = turma
+        self.turma_id = turma_id
+        
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
 users = {
     "Professores": [
         {"id": 1, "nome": "Simonica", "idade": 34, "materia": "matematica", "salario": 3500.00},

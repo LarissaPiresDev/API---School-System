@@ -1,5 +1,7 @@
 import os
 from flask import Flask
+import sqlalchemy as db
+
 
 
 app = Flask(__name__)
