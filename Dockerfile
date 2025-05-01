@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 5003
 
-CMD ["python", "app.py"]
+CMD ["python", "./api/app.py"]
