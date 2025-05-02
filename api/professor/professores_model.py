@@ -32,7 +32,7 @@ class ProfessorIdMenorQueUm(Exception):
     pass
 
 def listar_professores():
-    return users["Professores"]
+    return Professores["Professores"]
 
 def listar_professor_por_id(id):
     try:
@@ -48,9 +48,9 @@ def listar_professor_por_id(id):
     raise ProfessorNaoEncontrado
 
 def criar_professor(novo_professor):
-    id_novo = max([professor['id'] for professor in users['Professores']]) + 1
+    id_novo = max([professor['id'] for professor in Professores['Professores']]) + 1
     novo_professor['id'] = id_novo
-    users["Professores"].append(novo_professor)
+    Professores ["Professores"].append(novo_professor)
     return novo_professor
 
 def atualizar_professor(id, prof_atualizado):
@@ -59,4 +59,4 @@ def atualizar_professor(id, prof_atualizado):
     
 def deletar_professor(id):
     professor = listar_professor_por_id(id)
-    users["Professores"].remove(professor)
+    Professores ["Professores"].remove(professor)
