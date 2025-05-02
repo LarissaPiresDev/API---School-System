@@ -1,20 +1,29 @@
-users = {
-    "Turmas": [
-        {"id": 11, "descricao": "7 Ano A", "professor_id": 1, "ativo": True},
-        {"id": 12, "descricao": "7 Ano B", "professor_id": 2, "ativo": True},
-        {"id": 13, "descricao": "7 Ano C", "professor_id": 3, "ativo": False},
-    ],
+from professor.professores_model import Professor
+from alunos.alunos_model import Aluno
+from datetime import datetime, date
+from config import db
 
-    "Professores": [
-        {"id": 1, "nome": "Simonica", "idade": 34, "materia": "matematica", "salario": 3500.00},
-        {"id": 2, "nome": "Ione", "idade": 35, "materia": "portugues", "salario": 3800.00},
-        {"id": 3, "nome": "Francisco", "idade": 74, "materia": "Ed. Fisica", "salario": 5200.00},
-        {"id": 4, "nome": "Daniel", "idade": 74, "materia": "Historia", "salario": 1800.00},
-        {"id": 5, "nome": "Mariana", "idade": 28, "materia": "Artes", "salario": 3200.00},
-        {"id": 6, "nome": "Patricia", "idade": 34, "materia": "Quimica", "salario": 4200.00},
-        {"id": 7, "nome": "Maria", "idade": 67, "materia": "Portugues", "salario": 1900.00}
-    ],
-}
+
+class Turma(db.Model):
+    __tablename__  = "turmas"
+    id = db.Column(db.Integer, primary_key=True)
+    descricao = db.Column(db.String(50), nullable=False)
+    ativo = db.Column(db.Boolean, default=False)
+    
+    alunos = db.relationship("Aluno", back_populates='turma')
+    professor = db.relationship("Professor", back_populates='turmas')
+    professor_id = db.Column(db.Integer, db.ForeignKey("professor.id"), nullable=False)
+    
+    def __init__(self, descricao, ativo, professor_id):
+        self.descricao = descricao
+        self.ativo = ativo
+        self.professor_id = professor_id
+        
+    def to_dict(self):
+        return {'id': self.id, 'descricao': self.descricao, 'professor_id': self.professor_id, 'ativo': self.ativo}
+    
+    
+    
 
 class TurmaNaoEncontrada(Exception):
     pass
@@ -32,7 +41,8 @@ class ProfessorJaEstaEmUmaSala(Exception):
     pass
 
 def listarTurmas():
-    return users["Turmas"]
+    turmas = Turma.query.all()
+    return [turma.to_dict() for turma in turmas]
 
 def listarTurmaPorId(id):
     try:
@@ -42,46 +52,88 @@ def listarTurmaPorId(id):
     
     if id <= 0:
         raise TurmaIdMenorQueUm
-    for turma in users["Turmas"]:
-        if turma["id"] == id:
-            return turma 
-    raise TurmaNaoEncontrada
+    
+    turma = Turma.query.get(id)
+    if not turma:
+        raise TurmaNaoEncontrada
+    return turma.to_dict()
 
 def deletarTurma(id):
-    turma = listarTurmaPorId(id)
-    users["Turmas"].remove(turma)
+    try:
+        id = int(id)
+    except ValueError:
+        raise TurmaIdNaoInteiro
+    
+    if id <= 0:
+        raise TurmaIdMenorQueUm
+    
+    turma = Turma.query.get(id)
+    if not turma:
+        raise TurmaNaoEncontrada
+
+    db.session.delete(turma)
+    db.session.commit()
     
 def criarturma(nova_turma):
-    for turma in users["Turmas"]:
-        if nova_turma['descricao'].strip().lower() == turma['descricao'].strip().lower():
+    turmas = Turma.query.all()
+    for turma in turmas:
+        turma_dict = turma.to_dict()
+        if nova_turma['descricao'].strip().lower() == turma_dict['descricao'].strip().lower():
             raise turmaDescricaoJaExiste
-        if turma['professor_id'] == nova_turma['professor_id']:
+        
+        if turma_dict['professor_id'] == nova_turma['professor_id']:
             raise ProfessorJaEstaEmUmaSala
-
-    id_novo = max(turma['id'] for turma in users["Turmas"]) + 1 
-    nova_turma['id'] = id_novo 
-    users["Turmas"].append(nova_turma)
+        
+    new_turma = Turma(
+        descricao = nova_turma['descricao'],
+        professor_id = nova_turma['professor_id'],
+        ativo = nova_turma['ativo']
+        )
+    
+    db.session.add(new_turma)
+    db.session.commit()
+    return new_turma.to_dict()
+    
     
 def atualizar_turma(id, turma_atualizada):
-    for turma in users["Turmas"]:
-        if turma_atualizada['descricao'].strip().lower() == turma['descricao'].strip().lower():
+    try:
+        id = int(id)
+    except ValueError:
+        raise TurmaIdNaoInteiro
+    
+    if id <= 0:
+        raise TurmaIdMenorQueUm
+
+    
+    turmas = Turma.query.all()
+    
+    turma = Turma.query.get(id)
+    if not turma:
+        raise TurmaNaoEncontrada
+
+    for clas in turmas:
+        turma_dict = clas.to_dict()
+
+        if turma_atualizada['descricao'].strip().lower() == turma_dict['descricao'].strip().lower():
             raise turmaDescricaoJaExiste        
-        if turma['professor_id'] == turma_atualizada['professor_id'] and id != turma['id']:
+        if turma_dict['professor_id'] == turma_atualizada['professor_id'] and id != turma_dict['id']:
             raise ProfessorJaEstaEmUmaSala
 
-    turma = listarTurmaPorId(id)
-    turma.update(turma_atualizada)
     
-class professorNaoEncontrado(Exception):
+    turma.descricao = turma_atualizada['descricao']
+    turma.professor_id = turma_atualizada['professor_id']
+    turma.ativo = turma_atualizada['ativo']
+    
+    db.session.commit()
+    
+    
+class ProfessorNaoEncontrado(Exception):
     pass
 
 def achar_professor(professor_id):
-    for professor in users["Professores"]:
+    professores = Professor.query.all()
+    for professor in professores:
         if professor['id'] == professor_id:
             return True
-    raise professorNaoEncontrado
-
-    
-        
-
+    raise ProfessorNaoEncontrado
         

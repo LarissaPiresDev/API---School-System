@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from .turmas_model import listarTurmas, TurmaIdMenorQueUm, TurmaIdNaoInteiro, TurmaNaoEncontrada, listarTurmaPorId, deletarTurma, criarturma, professorNaoEncontrado, achar_professor, turmaDescricaoJaExiste, ProfessorJaEstaEmUmaSala, atualizar_turma
+from .turmas_model import listarTurmas, TurmaIdMenorQueUm, TurmaIdNaoInteiro, TurmaNaoEncontrada, listarTurmaPorId, deletarTurma, criarturma, ProfessorNaoEncontrado, achar_professor, turmaDescricaoJaExiste, ProfessorJaEstaEmUmaSala, atualizar_turma
 
 turma_blueprint = Blueprint('turmas', __name__)
 
@@ -67,7 +67,7 @@ def criar_turma():
 
     try:
         professor_existe = achar_professor(nova_turma['professor_id'])
-    except professorNaoEncontrado:
+    except ProfessorNaoEncontrado:
         return jsonify({'mensagem':'Id de Professor não encontrado'}), 400
         
         
