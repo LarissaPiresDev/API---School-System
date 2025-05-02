@@ -1,26 +1,44 @@
-users = {
-    "Professores": [
-        {"id": 1, "nome": "Simonica", "idade": 34, "materia": "matematica", "salario": 3500.00},
-        {"id": 2, "nome": "Ione", "idade": 35, "materia": "portugues", "salario": 3800.00},
-        {"id": 3, "nome": "Francisco", "idade": 74, "materia": "Ed. Fisica", "salario": 5200.00},
-        {"id": 4, "nome": "Daniel", "idade": 74, "materia": "Historia", "salario": 1800.00},
-        {"id": 5, "nome": "Mariana", "idade": 28, "materia": "Artes", "salario": 3200.00},
-        {"id": 6, "nome": "Patricia", "idade": 34, "materia": "Quimica", "salario": 4200.00},
-        {"id": 7, "nome": "Maria", "idade": 67, "materia": "Portugues", "salario": 1900.00}
-    ]
-}
+from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from datetime import date
 
-class ProfessorNaoEncontrado(Exception):
-    pass
+# Banco de dados
+engine = create_engine("sqlite:///Api.db", echo=True)
+Base = declarative_base()
+Session = sessionmaker(bind=engine)
 
-class ProfessorIdNaoInteiro(Exception):
-    pass
 
-class ProfessorIdMenorQueUm(Exception):
-    pass
+# Professor
+class Professor(Base):
+    __tablename__ = "professores"
 
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(100), nullable=False)
+    idade = Column(Integer, nullable=False)
+    data_nascimento = Column(Date, nullable=False)
+
+    turma_id = Column(Integer, ForeignKey("turmas.id"), nullable=False)
+    turma = relationship("Turma", back_populates="professores")
+
+    def __init__(self, nome, idade, data_nascimento, turma_id):
+        self.nome = nome
+        self.idade = idade
+        self.data_nascimento = data_nascimento
+        self.turma_id = turma_id
+
+Base.metadata.create_all(engine)
+
+# Exceções personalizadas
+class ProfessorNaoEncontrado(Exception): pass
+class ProfessorIdNaoInteiro(Exception): pass
+class ProfessorIdMenorQueUm(Exception): pass
+
+# CRUD
 def listar_professores():
-    return users["Professores"]
+    session = Session()
+    professores = session.query(Professor).all()
+    session.close()
+    return professores
 
 def listar_professor_por_id(id):
     try:
@@ -29,22 +47,39 @@ def listar_professor_por_id(id):
         raise ProfessorIdNaoInteiro
     if id <= 0:
         raise ProfessorIdMenorQueUm
-    professores = users['Professores']
-    for professor in professores:
-        if professor['id'] == id:
-            return professor
-    raise ProfessorNaoEncontrado
 
-def criar_professor(novo_professor):
-    id_novo = max([professor['id'] for professor in users['Professores']]) + 1
-    novo_professor['id'] = id_novo
-    users["Professores"].append(novo_professor)
-    return novo_professor
+    session = Session()
+    professor = session.query(Professor).get(id)
+    session.close()
 
-def atualizar_professor(id, prof_atualizado):
-    professor = listar_professor_por_id(id)
-    professor.update(prof_atualizado)
-    
+    if not professor:
+        raise ProfessorNaoEncontrado
+    return professor
+
+def adicionar_professor(nome, idade, data_nascimento, turma_id):
+    session = Session()
+    novo_professor = Professor(nome=nome, idade=idade, data_nascimento=data_nascimento, turma_id=turma_id)
+    session.add(novo_professor)
+    session.commit()
+    session.close()
+
+def atualizar_professor(id, dados_atualizados):
+    session = Session()
+    professor = session.query(Professor).get(id)
+    if not professor:
+        session.close()
+        raise ProfessorNaoEncontrado
+    for chave, valor in dados_atualizados.items():
+        setattr(professor, chave, valor)
+    session.commit()
+    session.close()
+
 def deletar_professor(id):
-    professor = listar_professor_por_id(id)
-    users["Professores"].remove(professor)
+    session = Session()
+    professor = session.query(Professor).get(id)
+    if not professor:
+        session.close()
+        raise ProfessorNaoEncontrado
+    session.delete(professor)
+    session.commit()
+    session.close()

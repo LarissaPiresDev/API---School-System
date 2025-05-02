@@ -122,7 +122,7 @@ def update_turma(id):
         try:
             professor_existe = achar_professor(turma_atualizada['professor_id'])
         
-        except professorNaoEncontrado:
+        except ProfessorNaoEncontrado:
             return jsonify({'mensagem': 'Professor Id não encontrado, tente novamente '}), 404   
 
 
