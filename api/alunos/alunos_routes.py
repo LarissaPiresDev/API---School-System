@@ -1,5 +1,8 @@
 from flask import Blueprint, request, jsonify
 from .alunos_model import AlunoNaoEncontrado, AlunoIdNaoInteiro, AlunoIdMenorQueUm, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno, atualizar_aluno, deletar_aluno
+from datetime import datetime
+from turma.turmas_model import Turma, listarTurmas
+from config import db
 
 alunos_blueprint = Blueprint('alunos', __name__)
 
@@ -28,7 +31,7 @@ def alunoPorId(id):
 def create_aluno():
     novo_aluno = request.json
 
-    chaves_esperadas = {'nome', 'idade', 'turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre', 'media_final'}
+    chaves_esperadas = {'nome','turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre'}
 
     chaves_inseridas = set(novo_aluno.keys())
 
@@ -42,35 +45,33 @@ def create_aluno():
     if 'nome' not in novo_aluno or 'turma_id' not in novo_aluno:
         return jsonify({'mensagem': 'Os campos nome, turma_id são OBRIGATÓRIOS'}), 400
     
-    if not isinstance(novo_aluno['turma_id'], int) or not isinstance(novo_aluno['idade'], int):
-        return jsonify({'mensagem': 'O valor informado para as chaves idade e turma_id precisam ser INTEIROS'}), 400
+    if not isinstance(novo_aluno['turma_id'], int):
+        return jsonify({'mensagem': 'O valor informado para a chave turma_id precisa ser INTEIROS'}), 400
     
-    if novo_aluno['turma_id'] < 0:
+    if novo_aluno['turma_id'] <= 0:
         return jsonify({'mensagem': 'O valor informado para a chave turma_id é INVÁLIDO (não pode ser negativo)'}), 400
 
 
-    try:
-        turmaexiste = achar_turma(novo_aluno['turma_id'])
-    except TurmaNaoEncontrada:
+
+    turma = Turma.query.get(novo_aluno['turma_id'])
+    if not turma:
         return jsonify({'mensagem': 'Id de turma não encontrada'}), 404
     
-    if not (isinstance(novo_aluno['nome'], str)):
-        return jsonify({'mensagem': 'Chave nome precisa ser do tipo string'}), 400
+    if not (isinstance(novo_aluno['nome'], str)) or not novo_aluno['nome'].strip():
+        return jsonify({'mensagem': 'Chave nome precisa ser do tipo string e não pode estar vazia'}), 400
     
-    if novo_aluno['idade'] <= 0:
-        return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}),400
-    
-    if 'data_nascimento' in novo_aluno:
-        if not isinstance(novo_aluno['data_nascimento'], str) or not novo_aluno['data_nascimento'].strip():
+    try:
+        novo_aluno['data_nascimento'] = datetime.strptime(novo_aluno['data_nascimento'], "%Y-%m-%d").date()
+    except (ValueError, TypeError):
             return jsonify({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa e não pode estar vazia'}), 400
 
     
-    if 'nota_primeiro_semestre' in novo_aluno or 'nota_segundo_semestre' in novo_aluno or 'media_final' in novo_aluno:
+    if 'nota_primeiro_semestre' in novo_aluno or 'nota_segundo_semestre' in novo_aluno:
         
-        if not isinstance(novo_aluno['nota_primeiro_semestre'], (int, float)) or not isinstance(novo_aluno['nota_segundo_semestre'], (int, float)) or not isinstance(novo_aluno['media_final'], (int, float)):
-            return jsonify({'mensagem': 'Os valores para as notas de primeiro, segundo, semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
+        if not isinstance(novo_aluno['nota_primeiro_semestre'], (int, float)) or not isinstance(novo_aluno['nota_segundo_semestre'], (int, float)):
+            return jsonify({'mensagem': 'Os valores para as notas de primeiro e segundo semestre, precisao ser do tipo INTEIRO ou FLOAT'}), 400
 
-        if novo_aluno['nota_primeiro_semestre'] < 0 or novo_aluno['nota_segundo_semestre'] < 0 or novo_aluno['media_final'] < 0:
+        if novo_aluno['nota_primeiro_semestre'] < 0 or novo_aluno['nota_segundo_semestre'] < 0:
             return jsonify({'mensagem' : 'As notas e a media precisam receber um valor inteiro ou float'}), 400
     
     
@@ -81,10 +82,7 @@ def create_aluno():
         novo_aluno['nota_primeiro_semestre'] = 0.0
     if 'nota_segundo_semestre' not in novo_aluno:
         novo_aluno['nota_segundo_semestre'] = 0.0
-    if 'media_final' not in novo_aluno:
-        novo_aluno['media_final'] = 0.0
-    
-    
+        
     novo_aluno_criado = criar_aluno(novo_aluno)
 
     return jsonify(novo_aluno_criado), 201
@@ -94,7 +92,7 @@ def create_aluno():
 def update_aluno(id):    
     aluno_atualizado = request.json
 
-    chaves_esperadas = {'nome', 'idade', 'turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre', 'media_final'}
+    chaves_esperadas = {'nome','turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre'}
     chaves_inseridas = set(aluno_atualizado.keys())
     chaves_invalidas = chaves_inseridas - chaves_esperadas
     if chaves_invalidas:
@@ -105,7 +103,7 @@ def update_aluno(id):
         
     if 'nome' in aluno_atualizado:
         if not isinstance(aluno_atualizado['nome'], str) or not aluno_atualizado['nome'].strip():
-            return jsonify({'mensagem': 'O valor para a chave aluno precisa ser uma string e não pode estar vazia'}), 400
+            return jsonify({'mensagem': 'O valor para a chave nome precisa ser uma string e não pode estar vazia'}), 400
         
     if 'turma_id' in aluno_atualizado:
         
@@ -115,42 +113,30 @@ def update_aluno(id):
         if aluno_atualizado['turma_id'] <= 0:
             return jsonify({'mensagem': 'A chave turma_id precisa ser maior que zero'}), 400
         
-        try:
-            turmaexiste = achar_turma(aluno_atualizado['turma_id'])
-        except TurmaNaoEncontrada:
+        turma = Turma.query.get(aluno_atualizado['turma_id'])
+        if not turma:
             return jsonify({'mensagem': 'Id de turma não encontrado'}), 404
-       
     if 'data_nascimento' in aluno_atualizado:
-        if not isinstance(aluno_atualizado['data_nascimento'], str) or not aluno_atualizado['data_nascimento'].strip():
-            return jsonify({'mensagem': 'A chave data_nascimento precisa ser uma string e não pode estar vazia!!'}), 400
-        
-    if 'idade' in aluno_atualizado:
-        
         try:
-           aluno_atualizado['idade']  = int(aluno_atualizado['idade'])
-        except ValueError:       
-            return jsonify({'mensagem': 'O valor informado para a chave idade precisa ser um número inteiro INTEIRO'}), 400
+            aluno_atualizado['data_nascimento'] = datetime.strptime(aluno_atualizado['data_nascimento'], "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+                return jsonify({'mensagem': 'A chave data_nascimento precisa ser uma string no formato YYYY-MM-DD e não pode estar vazia'}), 400
         
-        if aluno_atualizado['idade'] <= 0:
-            return jsonify({'mensagem': 'O valor informado na chave idade não pode ser negativo ou igual a zero'}), 400
-        
-    if 'nota_primeiro_semestre' in aluno_atualizado or 'nota_segundo_semestre' in aluno_atualizado or 'media_final' in aluno_atualizado:
+    if 'nota_primeiro_semestre' in aluno_atualizado or 'nota_segundo_semestre' in aluno_atualizado:
         try:
             aluno_atualizado['nota_primeiro_semestre'] = float(aluno_atualizado['nota_primeiro_semestre'])
             aluno_atualizado['nota_segundo_semestre'] = float(aluno_atualizado['nota_segundo_semestre'])
-            aluno_atualizado['media_final'] = float(aluno_atualizado['media_final'])
         except ValueError:
-            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam ser do tipo float'}), 400
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro e segundo semestre precisam ser do tipo float'}), 400
 
-        if aluno_atualizado['nota_primeiro_semestre'] < 0 or aluno_atualizado['nota_segundo_semestre'] < 0 or aluno_atualizado['media_final'] < 0:
-            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser números negativos'}), 400 
+        if aluno_atualizado['nota_primeiro_semestre'] < 0 or aluno_atualizado['nota_segundo_semestre'] < 0:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas não podem ser números negativos'}), 400 
             
-        if aluno_atualizado['nota_primeiro_semestre'] > 10 or aluno_atualizado['nota_segundo_semestre'] > 10 or aluno_atualizado['media_final'] > 10:
-            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro, segundo semestre e média_final precisam não podem ser maiores que 10'}), 400
+        if aluno_atualizado['nota_primeiro_semestre'] > 10 or aluno_atualizado['nota_segundo_semestre'] > 10:
+            return jsonify({'mensagem': 'O novo valor para as chaves das notas primeiro e segundo semestre  não podem ser maiores que 10'}), 400
         
         
     try:
-        
         aluno = atualizar_aluno(id, aluno_atualizado)
         return jsonify({'mensagem': 'Aluno atualizada com sucesso'}), 200
     
