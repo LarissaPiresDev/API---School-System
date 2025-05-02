@@ -1,38 +1,44 @@
+from sqlalchemy import create_engine, Column, Integer, String, Date, ForeignKey
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from datetime import date
 
-from turma.turmas_model import listarTurmas
-from datetime import datetime, date
-from config import db
+# Banco de dados
+engine = create_engine("sqlite:///Api.db", echo=True)
+Base = declarative_base()
+Session = sessionmaker(bind=engine)
 
-class Professores(db.Model):
+
+# Professor
+class Professor(Base):
     __tablename__ = "professores"
-    
-    id = db.Column (db.Integer, primary_key=True)
-    nome = db.Column (db.String(100), nullable=False)
-    idade = db.Column (db.Integer, nullable=False)
-    data_nascimento = db.Column (db.Date, nullable=False)
-    
 
-    turma = db.relationship("Turma", back_populates="professores")
-    turma_id = db.Column (db.Integer, db.ForeignKey("turmas.id"), nullable=False)
-    
-    def __init__ (self, nome, idade, turma, turma_id):
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(100), nullable=False)
+    idade = Column(Integer, nullable=False)
+    data_nascimento = Column(Date, nullable=False)
+
+    turma_id = Column(Integer, ForeignKey("turmas.id"), nullable=False)
+    turma = relationship("Turma", back_populates="professores")
+
+    def __init__(self, nome, idade, data_nascimento, turma_id):
         self.nome = nome
-        self.idade =  idade
-        self.turma = turma
+        self.idade = idade
+        self.data_nascimento = data_nascimento
         self.turma_id = turma_id
-    
 
-class ProfessorNaoEncontrado(Exception):
-    pass
+Base.metadata.create_all(engine)
 
-class ProfessorIdNaoInteiro(Exception):
-    pass
+# Exceções personalizadas
+class ProfessorNaoEncontrado(Exception): pass
+class ProfessorIdNaoInteiro(Exception): pass
+class ProfessorIdMenorQueUm(Exception): pass
 
-class ProfessorIdMenorQueUm(Exception):
-    pass
-
+# CRUD
 def listar_professores():
-    return Professores["Professores"]
+    session = Session()
+    professores = session.query(Professor).all()
+    session.close()
+    return professores
 
 def listar_professor_por_id(id):
     try:
@@ -41,22 +47,39 @@ def listar_professor_por_id(id):
         raise ProfessorIdNaoInteiro
     if id <= 0:
         raise ProfessorIdMenorQueUm
-    professores = users['Professores']
-    for professor in professores:
-        if professor['id'] == id:
-            return professor
-    raise ProfessorNaoEncontrado
 
-def criar_professor(novo_professor):
-    id_novo = max([professor['id'] for professor in Professores['Professores']]) + 1
-    novo_professor['id'] = id_novo
-    Professores ["Professores"].append(novo_professor)
-    return novo_professor
+    session = Session()
+    professor = session.query(Professor).get(id)
+    session.close()
 
-def atualizar_professor(id, prof_atualizado):
-    professor = listar_professor_por_id(id)
-    professor.update(prof_atualizado)
-    
+    if not professor:
+        raise ProfessorNaoEncontrado
+    return professor
+
+def adicionar_professor(nome, idade, data_nascimento, turma_id):
+    session = Session()
+    novo_professor = Professor(nome=nome, idade=idade, data_nascimento=data_nascimento, turma_id=turma_id)
+    session.add(novo_professor)
+    session.commit()
+    session.close()
+
+def atualizar_professor(id, dados_atualizados):
+    session = Session()
+    professor = session.query(Professor).get(id)
+    if not professor:
+        session.close()
+        raise ProfessorNaoEncontrado
+    for chave, valor in dados_atualizados.items():
+        setattr(professor, chave, valor)
+    session.commit()
+    session.close()
+
 def deletar_professor(id):
-    professor = listar_professor_por_id(id)
-    Professores ["Professores"].remove(professor)
+    session = Session()
+    professor = session.query(Professor).get(id)
+    if not professor:
+        session.close()
+        raise ProfessorNaoEncontrado
+    session.delete(professor)
+    session.commit()
+    session.close()
