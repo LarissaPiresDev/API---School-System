@@ -9,12 +9,12 @@ class Aluno(db.Model):
     nome = db.Column(db.String(150), nullable=False)
     idade = db.Column(db.Integer, nullable=False)
     data_nascimento = db.Column(db.Date, nullable=False)
-    nota_primeiro_semestre = db.Column(db.Float, nullable=False)
-    nota_segundo_semestre = db.Column(db.Float, nullable=False)
-    media_final = db.Column(db.Float, nullable=False)
+    nota_primeiro_semestre = db.Column(db.Float, nullable=True)
+    nota_segundo_semestre = db.Column(db.Float, nullable=True)
+    media_final = db.Column(db.Float, nullable=True)
 
-    turma = db.relationship("Turma", back_populates="alunos")
     turma_id = db.Column(db.Integer, db.ForeignKey("turmas.id"), nullable=False)
+    turma = db.relationship("Turma", back_populates="alunos")
     
     def __init__(self, nome, data_nascimento, nota_primeiro_semestre, nota_segundo_semestre, turma_id):
         self.nome = nome
@@ -34,7 +34,7 @@ class Aluno(db.Model):
         return media
     
     def to_dict(self):
-        return{'id': self.id, 'nome':self.nome, 'idade': self.idade, 'data_nascimento': self.data_nascimento, 'nota primeiro semestre': self.nota_primeiro_semestre, 'nota segundo semestre': self.nota_segundo_semestre, 'media final': self.media_final}      
+        return{'id': self.id, 'nome':self.nome, 'idade': self.idade,'data_nascimento': self.data_nascimento.strftime("%Y-%m-%d"), 'nota primeiro semestre': self.nota_primeiro_semestre, 'nota segundo semestre': self.nota_segundo_semestre, 'media final': self.media_final}      
         
 class AlunoNaoEncontrado(Exception):
     pass
@@ -63,12 +63,18 @@ def aluno_por_id(id):
     return aluno.to_dict()
 
 def criar_aluno(novo_aluno):
+    from turma.turmas_model import Turma
     turma = Turma.query.get(novo_aluno['turma_id'])
     if not turma:
         raise TurmaNaoEncontrada
+    
+    if isinstance(novo_aluno['data_nascimento'], str):
+        data_nascimento = datetime.strptime(novo_aluno['data_nascimento'], "%Y-%m-%d").date()
+    else:
+        data_nascimento = novo_aluno['data_nascimento']
     new_aluno = Aluno(
         nome=str(novo_aluno['nome']),
-        data_nascimento=datetime.strptime(novo_aluno['data_nascimento'],"%Y-%m-%d").date(),
+        data_nascimento=data_nascimento,
         nota_primeiro_semestre=float(novo_aluno['nota_primeiro_semestre']),
         nota_segundo_semestre=float(novo_aluno['nota_segundo_semestre']),
         turma_id=int(novo_aluno['turma_id'])

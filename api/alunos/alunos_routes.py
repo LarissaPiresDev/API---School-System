@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from .alunos_model import AlunoNaoEncontrado, AlunoIdNaoInteiro, AlunoIdMenorQueUm, listar_alunos, aluno_por_id, TurmaNaoEncontrada, achar_turma, criar_aluno, atualizar_aluno, deletar_aluno
 from datetime import datetime
+from .alunos_model import AlunoNaoEncontrado, AlunoIdNaoInteiro, AlunoIdMenorQueUm, listar_alunos, aluno_por_id, TurmaNaoEncontrada, criar_aluno, atualizar_aluno, deletar_aluno
 from turma.turmas_model import Turma, listarTurmas
 from config import db
 
