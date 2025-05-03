@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from .professores_model import listar_professores, ProfessorIdMenorQueUm, ProfessorIdNaoInteiro, ProfessorNaoEncontrado, listar_professor_por_id, criar_professor, atualizar_professor, deletar_professor
+from config import db
 
 professor_blueprint = Blueprint('professores', __name__)
 
