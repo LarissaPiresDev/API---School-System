@@ -1,6 +1,4 @@
-from professor.professores_model import Professor
-from alunos.alunos_model import Aluno
-from datetime import datetime, date
+from datetime import datetime
 from config import db
 
 
@@ -11,8 +9,8 @@ class Turma(db.Model):
     ativo = db.Column(db.Boolean, default=False)
     
     alunos = db.relationship("Aluno", back_populates='turma')
+    professor_id = db.Column(db.Integer, db.ForeignKey("professores.id"), nullable=False)
     professor = db.relationship("Professor", back_populates='turmas')
-    professor_id = db.Column(db.Integer, db.ForeignKey("professor.id"), nullable=False)
     
     def __init__(self, descricao, ativo, professor_id):
         self.descricao = descricao
@@ -75,6 +73,7 @@ def deletarTurma(id):
     db.session.commit()
     
 def criarturma(nova_turma):
+    from professor.professores_model import Professor
     turmas = Turma.query.all()
     for turma in turmas:
         turma_dict = turma.to_dict()
@@ -96,6 +95,8 @@ def criarturma(nova_turma):
     
     
 def atualizar_turma(id, turma_atualizada):
+    from professor.professores_model import Professor
+
     try:
         id = int(id)
     except ValueError:
@@ -131,8 +132,10 @@ class ProfessorNaoEncontrado(Exception):
     pass
 
 def achar_professor(professor_id):
+    from professor.professores_model import Professor
     professores = Professor.query.all()
     for professor in professores:
+        professor = professor.to_dict()
         if professor['id'] == professor_id:
             return True
     raise ProfessorNaoEncontrado
