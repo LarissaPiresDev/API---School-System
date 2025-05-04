@@ -1,4 +1,5 @@
 from datetime import datetime
+from professor.professores_model import Professor
 from config import db
 
 
@@ -95,8 +96,6 @@ def criarturma(nova_turma):
     
     
 def atualizar_turma(id, turma_atualizada):
-    from professor.professores_model import Professor
-
     try:
         id = int(id)
     except ValueError:
@@ -132,7 +131,6 @@ class ProfessorNaoEncontrado(Exception):
     pass
 
 def achar_professor(professor_id):
-    from professor.professores_model import Professor
     professores = Professor.query.all()
     for professor in professores:
         professor = professor.to_dict()
