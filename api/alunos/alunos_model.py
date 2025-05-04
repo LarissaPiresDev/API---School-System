@@ -34,7 +34,7 @@ class Aluno(db.Model):
         return media
     
     def to_dict(self):
-        return{'id': self.id, 'nome':self.nome, 'idade': self.idade,'data_nascimento': self.data_nascimento.strftime("%Y-%m-%d"), 'nota primeiro semestre': self.nota_primeiro_semestre, 'nota segundo semestre': self.nota_segundo_semestre, 'media final': self.media_final}      
+        return{'id': self.id, 'nome':self.nome, 'turma_id': self.turma_id, 'idade': self.idade,'data_nascimento': self.data_nascimento.strftime("%Y-%m-%d"), 'nota primeiro semestre': self.nota_primeiro_semestre, 'nota segundo semestre': self.nota_segundo_semestre, 'media final': self.media_final}      
         
 class AlunoNaoEncontrado(Exception):
     pass
