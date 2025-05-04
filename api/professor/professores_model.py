@@ -1,4 +1,3 @@
-from turma.turmas_model import Turma
 from config import db
 
 
@@ -62,6 +61,7 @@ def criar_professor (novo_professor):
     
     db.session.add(new_professor)
     db.session.commit()
+    return new_professor.to_dict()
     
 
 
