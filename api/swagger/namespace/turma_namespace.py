@@ -6,14 +6,14 @@ turma_ns = Namespace("turma", description="Operações relacionadas as turmas")
 turma_model = turma_ns.model("turma", {
     "descricao": fields.String(required=True, description="Descrição da turma (nome dela)"),
     "professor_id": fields.Integer(required=True, description="ID do professor coordenador da turma"),
-    "ativo": fields.String(required=True, description="Situação da turma (se a turma esta ativada ou não)"),
+    "ativo": fields.Boolean(required=True, description="Situação da turma (se a turma esta ativada ou não)"),
 })
 
 turma_output_model = turma_ns.model("turmaOutput", {
     "id": fields.Integer(description="ID da turma"),
     "descricao": fields.String(description="Descrição da turma"),
     "professor_id": fields.Integer(description="ID do professor"),
-    "ativo": fields.String(description="Situação da turma"),
+    "ativo": fields.Boolean(description="Situação da turma"),
 })
 
 @turma_ns.route("/")

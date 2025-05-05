@@ -6,15 +6,16 @@ professor_ns = Namespace("professor", description="Operações relacionadas ao p
 
 professor_model = professor_ns.model("professor", {
     "nome": fields.String(required=True, description="Nome do professor"),
-    "idade": fields.String(required=True, description="Idade"),
-    "materia": fields.Float(required=True, description="Matéria que leciona"),
+    "idade": fields.Integer(required=True, description="Idade"),
+    "materia": fields.String(required=True, description="Matéria que leciona"),
     "salario": fields.Float(required=True, description="Observações"),
 })
 
 professor_output_model = professor_ns.model("professorOutput", {
+    "id": fields.Integer(description="ID do professor"),
     "nome": fields.String(description="Nome do professor"),
-    "idade": fields.String(description="Idade do professor"),
-    "materia": fields.Float(description="Matéria que dao Aula"),
+    "idade": fields.Integer(description="Idade do professor"),
+    "materia": fields.String(description="Matéria que ao qual dão Aula"),
     "salario": fields.Float(description="Salario do Professor"),
 })
 

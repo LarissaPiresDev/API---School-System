@@ -8,7 +8,7 @@ aluno_model = alunos_ns.model("Aluno", {
     "data_nascimento": fields.String(required=True, description="Data de nascimento (YYYY-MM-DD)"),
     "nota_primeiro_semestre": fields.Float(required=True, description="Nota do primeiro semestre"),
     "nota_segundo_semestre": fields.Float(required=True, description="Nota do segundo semestre"),
-    "turma_id": fields.Integer(required=True, description="ID da turma associada"),
+    "turma_id": fields.Integer(required=True, description="ID da turma em que o aluno está estudando"),
 })
 
 aluno_output_model = alunos_ns.model("AlunoOutput", {
@@ -18,8 +18,8 @@ aluno_output_model = alunos_ns.model("AlunoOutput", {
     "data_nascimento": fields.String(description="Data de nascimento (YYYY-MM-DD)"),
     "nota_primeiro_semestre": fields.Float(description="Nota do primeiro semestre"),
     "nota_segundo_semestre": fields.Float(description="Nota do segundo semestre"),
-    "media_final": fields.Float(description="Média final do aluno de acordo com as suas notas"),
-    "turma_id": fields.Integer(description="ID da turma em que o aluno esta estudando"),
+    "media_final": fields.Float(description="Média final do aluno de acordo com as suas notas do primeiro e segundo semestre"),
+    "turma_id": fields.Integer(description="ID da turma em que o aluno está estudando"),
 })
 
 @alunos_ns.route("/")
