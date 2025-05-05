@@ -72,7 +72,7 @@ cd API---School-System
 ```
 docker build -t school-api .
 ```
-# Execute o container
+### 3. Execute o container
 ```
 docker run --rm -d -p 5003:5003 --name school-api-container school-api
 ```
