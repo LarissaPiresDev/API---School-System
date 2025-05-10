@@ -22,6 +22,13 @@ class turmaResource(Resource):
     def get(self):
         """Lista os dados de todas as turmas presentes no banco de dados"""
         return listarTurmas()
+    
+    @turma_ns.expect(turma_model)
+    def post(self):
+        """Cria uma nova turma"""
+        data = turma_ns.payload
+        response, status_code = criarturma(data)
+        return response, status_code
 
 @turma_ns.route("/<int:idTurma>")
 class turmaIdResource(Resource):
@@ -29,14 +36,6 @@ class turmaIdResource(Resource):
     def get(self, idTurma):
         """Mostra os dados de um turma pelo seu ID"""
         return listarTurmaPorId(idTurma)
-
-
-    @turma_ns.expect(turma_model)
-    def post(self):
-        """Cria uma nova turma"""
-        data = turma_ns.payload
-        response, status_code = criarturma(data)
-        return response, status_code
 
     @turma_ns.expect(turma_model)
     def put(self, idTurma):

@@ -29,19 +29,19 @@ class AlunosResource(Resource):
         """Lista todos os alunos do nosso banco de dados"""
         return listar_alunos()
     
-@alunos_ns.route("/<int:id_aluno>")
-class AlunoIdResource(Resource):
-    @alunos_ns.marshal_with(aluno_output_model)
-    def get(self, id_aluno):
-        """Mostra os dados de um aluno pelo seu ID"""
-        return aluno_por_id(id_aluno)
-
     @alunos_ns.expect(aluno_model)
     def post(self):
         """Cria um novo aluno no banco de dados"""
         data = alunos_ns.payload
         response, status_code = criar_aluno(data)
         return response, status_code
+    
+@alunos_ns.route("/<int:id_aluno>")
+class AlunoIdResource(Resource):
+    @alunos_ns.marshal_with(aluno_output_model)
+    def get(self, id_aluno):
+        """Mostra os dados de um aluno pelo seu ID"""
+        return aluno_por_id(id_aluno)
 
     @alunos_ns.expect(aluno_model)
     def put(self, id_aluno):

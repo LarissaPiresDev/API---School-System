@@ -26,6 +26,14 @@ class professorResource(Resource):
         """Lista os dados de todos os professores"""
         return listar_professores()
     
+    @professor_ns.expect(professor_model)
+    def post(self):
+        """Cria um novo professor"""
+        data = professor_ns.payload
+        response, status_code = criar_professor(data)
+        return response, status_code
+
+    
 
 @professor_ns.route("/<int:idProfessor>")
 class professorIdResource(Resource):
@@ -35,13 +43,6 @@ class professorIdResource(Resource):
         return listar_professor_por_id(idProfessor)
 
     @professor_ns.expect(professor_model)
-    def post(self):
-        """Cria um novo professor"""
-        data = professor_ns.payload
-        response, status_code = criar_professor(data)
-        return response, status_code
-
-    @professor_ns.expect(professor_model)
     def put(self, idProfessor):
         """Atualiza um professor pelo ID"""
         data = professor_ns.payload
@@ -49,6 +50,6 @@ class professorIdResource(Resource):
         return data, 200
 
     def delete(self, idProfessor):
-        """"Atualiza os dados de um professor pelo seu ID"""
+        """"Deleta os dados de um professor pelo seu ID"""
         deletar_professor(idProfessor)
         return {"message": "professor excluído com sucesso"}, 200
