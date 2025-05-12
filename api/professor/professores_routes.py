@@ -28,7 +28,7 @@ def profPorId(id):
 def create_professor():
     novo_professor = request.json
 
-    chaves_esperadas = {'nome', 'idade', 'materia', 'salario'}
+    chaves_esperadas = {'nome', 'idade', 'materia', 'observacoes'}
     chaves_inseridas = set(novo_professor.keys())
 
     chaves_invalidas = chaves_inseridas - chaves_esperadas
@@ -49,8 +49,8 @@ def create_professor():
     if not isinstance(novo_professor['idade'], int):
         return jsonify({'mensagem': 'Idade precisa ser um número INTEIRO'}), 400
     
-    if not isinstance(novo_professor['salario'], (int, float)):
-        return jsonify({'mensagem':'O parametro de salário precisa ser um número do tipo float ou int'}), 400
+    if not isinstance(novo_professor['observacoes'], str):
+        return jsonify({'mensagem':'O parametro de observacoes precisa ser uma string'}), 400
     
     if novo_professor['idade'] >= 0 and novo_professor['idade'] < 18:
         return jsonify({'mensagem': 'Um professor precisa ter no minimo 18 anos'}), 400
@@ -60,9 +60,6 @@ def create_professor():
 
     if novo_professor['idade'] < 0:
         return jsonify({'mensagem': 'Idade não pode ser negativa!!'}), 400
-
-    if novo_professor['salario'] < 1400.00:
-        return jsonify({'mensagem': 'Salario precisa ser no minino a partir de R$1400.00 e nao pode ser negativo'}), 400
     
 
     novo_professor_criado = criar_professor(novo_professor)
@@ -75,7 +72,7 @@ def update_professor(id):
     prof_atualizado = request.json
     
     
-    chaves_esperadas = {'nome', 'idade', 'materia', 'salario'}
+    chaves_esperadas = {'nome', 'idade', 'materia', 'observacoes'}
     chaves_inseridas = set(prof_atualizado.keys())
     chaves_invalidas = chaves_inseridas - chaves_esperadas
     if chaves_invalidas:
@@ -105,16 +102,11 @@ def update_professor(id):
             return jsonify({'mensagem': 'O valor inserido em chave matéria precisa ser do tipo String e não pode estar vazia'}), 400
 
 
-    if 'salario' in prof_atualizado:
+    if 'observacoes' in prof_atualizado:
         try:
-            salario = float(prof_atualizado['salario'])
+            observacoes = str(prof_atualizado['observacoes'])
         except ValueError:
-            return jsonify({'mensagem': 'O valor da chave salário precisa ser do um número com ponto flutuante (FLOAT, ex: 1400.0), ou int(1400) para que possa existir a converção'}), 400
-
-        if salario < 1400:
-            return jsonify({'mensagem': 'O novo valor para salário deve ser no mínimo 1400 e não pode ser negativo'}), 400
-
-
+            return jsonify({'mensagem': 'O valor da chave observações precisa ser do uma string'}), 400
     try:
         professor = atualizar_professor(id, prof_atualizado)
         return jsonify({'mensagem': f'Professor {prof_atualizado["nome"]} atualizado com sucesso'}), 200
