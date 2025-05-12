@@ -8,7 +8,7 @@ professor_model = professor_ns.model("professor", {
     "nome": fields.String(required=True, description="Nome do professor"),
     "idade": fields.Integer(required=True, description="Idade"),
     "materia": fields.String(required=True, description="Matéria que leciona"),
-    "salario": fields.Float(required=True, description="Observações"),
+    "observacoes": fields.String(required=True, description="Observações"),
 })
 
 professor_output_model = professor_ns.model("professorOutput", {
@@ -16,7 +16,7 @@ professor_output_model = professor_ns.model("professorOutput", {
     "nome": fields.String(description="Nome do professor"),
     "idade": fields.Integer(description="Idade do professor"),
     "materia": fields.String(description="Matéria que ao qual dão Aula"),
-    "salario": fields.Float(description="Salario do Professor"),
+    "observacoes": fields.String(description="Observacoes adicionais sobre o Professor"),
 })
 
 @professor_ns.route("/")
