@@ -79,6 +79,7 @@ docker run --rm -d -p 5003:5003 --name school-api-container school-api
 ---
 
 ## 📁 Estrutura do Projeto
+```
 API---School-System/
 │
 ├── 📁 api/
@@ -106,3 +107,4 @@ API---School-System/
 ├── 🐳 Dockerfile
 ├── 📄 requirements.txt
 └── 📄 README.md
+```
