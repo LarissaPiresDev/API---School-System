@@ -136,6 +136,9 @@ def update_turma(id):
         
     except TurmaIdMenorQueUm:
         return jsonify({'mensagem': 'ID de turma precisa ser maior que zero'}), 400
+    
+    except turmaDescricaoJaExiste:
+        return jsonify({'mensagem': f'A turma {turma_atualizada["descricao"]} já existe'})
         
     except TurmaNaoEncontrada:
         return jsonify({'mensagem': 'Erro, ID de turma não encontrado'}), 404

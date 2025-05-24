@@ -113,16 +113,20 @@ def atualizar_turma(id, turma_atualizada):
 
     for clas in turmas:
         turma_dict = clas.to_dict()
+        if 'descricao' in turma_atualizada:
+            if turma_atualizada['descricao'].strip().lower() == turma_dict['descricao'].strip().lower() and id != turma_dict['id']:
+                raise turmaDescricaoJaExiste  
+        
+        if 'professor_id' in turma_atualizada:
+            if turma_dict['professor_id'] == turma_atualizada['professor_id'] and id != turma_dict['id']:
+                raise ProfessorJaEstaEmUmaSala
 
-        if turma_atualizada['descricao'].strip().lower() == turma_dict['descricao'].strip().lower():
-            raise turmaDescricaoJaExiste        
-        if turma_dict['professor_id'] == turma_atualizada['professor_id'] and id != turma_dict['id']:
-            raise ProfessorJaEstaEmUmaSala
-
-    
-    turma.descricao = turma_atualizada['descricao']
-    turma.professor_id = turma_atualizada['professor_id']
-    turma.ativo = turma_atualizada['ativo']
+    if 'descricao' in turma_atualizada:
+        turma.descricao = turma_atualizada['descricao']
+    if 'professor_id' in turma_atualizada:
+        turma.professor_id = turma_atualizada['professor_id']
+    if 'ativo' in turma_atualizada:
+        turma.ativo = turma_atualizada['ativo']
     
     db.session.commit()
     
