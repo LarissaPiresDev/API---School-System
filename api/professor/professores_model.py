@@ -77,11 +77,14 @@ def atualizar_professor(id, professor_atualizado):
     if not professor:
         raise ProfessorNaoEncontrado
     
-    
-    professor.nome=professor_atualizado['nome']
-    professor.idade=professor_atualizado['idade']
-    professor.materia=professor_atualizado['materia']
-    professor.observacoes=professor_atualizado['observacoes']
+    if 'nome' in professor_atualizado:
+        professor.nome=professor_atualizado['nome']
+    if 'idade' in professor_atualizado:
+        professor.idade=professor_atualizado['idade']
+    if 'materia' in professor_atualizado:
+        professor.materia=professor_atualizado['materia']
+    if 'observacoes' in professor_atualizado:      
+        professor.observacoes=professor_atualizado['observacoes']
     
     db.session.commit()
 
