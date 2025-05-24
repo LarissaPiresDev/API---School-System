@@ -95,16 +95,22 @@ def atualizar_aluno(id, aluno_atualizado):
     aluno = Aluno.query.get(id)
     if not aluno:
         raise AlunoNaoEncontrado
-    turma = Turma.query.get(aluno_atualizado['turma_id'])
-    if not turma:
-        raise TurmaNaoEncontrada
+    if 'turma_id' in aluno_atualizado:
+        turma = Turma.query.get(aluno_atualizado['turma_id'])
+        if not turma:
+            raise TurmaNaoEncontrada
     
-    aluno.nome = aluno_atualizado['nome']
-    aluno.data_nascimento = aluno_atualizado['data_nascimento']
-    aluno.nota_primeiro_semestre = aluno_atualizado['nota_primeiro_semestre']
-    aluno.nota_segundo_semestre = aluno_atualizado['nota_segundo_semestre']
+    if 'nome' in aluno_atualizado:
+        aluno.nome = aluno_atualizado['nome']
+    if 'data_nascimento' in aluno_atualizado:
+        aluno.data_nascimento = aluno_atualizado['data_nascimento']
+    if 'nota_primeiro_semestre' in aluno_atualizado:
+        aluno.nota_primeiro_semestre = aluno_atualizado['nota_primeiro_semestre']
+    if 'nota_segundo_semestre' in aluno_atualizado:
+        aluno.nota_segundo_semestre = aluno_atualizado['nota_segundo_semestre']
     aluno.media_final = aluno.calcular_media_final()
-    aluno.turma_id = aluno_atualizado['turma_id']
+    if 'turma_id' in aluno_atualizado:
+        aluno.turma_id = aluno_atualizado['turma_id']
     aluno.idade = aluno.calcular_idade()
     
     db.session.commit()
