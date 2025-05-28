@@ -31,6 +31,9 @@ def alunoPorId(id):
 def create_aluno():
     novo_aluno = request.json
 
+    if 'idade' in novo_aluno or 'media_final' in novo_aluno:
+        return jsonify({'mensagem': 'Os campos media_final e idade não precisam ser inseridos, pois serão calculados automaticamente'}), 400
+
     chaves_esperadas = {'nome','turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre'}
 
     chaves_inseridas = set(novo_aluno.keys())
@@ -63,7 +66,7 @@ def create_aluno():
     try:
         novo_aluno['data_nascimento'] = datetime.strptime(novo_aluno['data_nascimento'], "%Y-%m-%d").date()
     except (ValueError, TypeError):
-            return jsonify({'mensagem': 'Data de Nascimento precisa ser uma string dd-mm-aaaa e não pode estar vazia'}), 400
+            return jsonify({'mensagem': 'Data de Nascimento precisa ser uma string YYYY-MM-DD e não pode estar vazia'}), 400
 
     
     if 'nota_primeiro_semestre' in novo_aluno or 'nota_segundo_semestre' in novo_aluno:
@@ -91,6 +94,9 @@ def create_aluno():
 @alunos_blueprint.route('/alunos/<id>', methods=['PUT'])
 def update_aluno(id):    
     aluno_atualizado = request.json
+
+    if 'idade' in aluno_atualizado or 'media_final' in aluno_atualizado:
+        return jsonify({'mensagem': 'Os campos media_final e idade não precisam ser inseridos, pois serão calculados automaticamente'}), 400
 
     chaves_esperadas = {'nome','turma_id', 'data_nascimento', 'nota_primeiro_semestre', 'nota_segundo_semestre'}
     chaves_inseridas = set(aluno_atualizado.keys())
