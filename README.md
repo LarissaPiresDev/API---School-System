@@ -78,6 +78,10 @@ docker run --rm -d -p 5003:5003 --name school-api-container school-api
 ```
 ---
 
+## 🛠🛠 Microsservissos que rodam com a Api School System
+### - Criar atividades de acordo com o ID de professor [Clique Aqui para Acessar](https://github.com/LarissaPiresDev/Atividade)
+### - Criar reservas de salas de acordo com o ID de turma [Clique aqui para Acessar](https://github.com/LarissaPiresDev/Reserva-salas)
+
 ## 📁 Estrutura do Projeto
 ```
 API---School-System/
